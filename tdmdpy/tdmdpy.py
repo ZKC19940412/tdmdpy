@@ -4,6 +4,7 @@ import subprocess
 
 def get_quantity_averages(quantities, mode='all'):
     """get averages of quantity derived from MD simulation
+       
        input:
        quantities: (ndarray) quantity derived from MD simulation
        mode: (str) different modes to take averages
