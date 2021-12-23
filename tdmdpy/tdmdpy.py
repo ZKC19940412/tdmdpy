@@ -31,7 +31,6 @@ def grep_from_md_output(md_output_file_name, time_step_in_ps, total_number_of_st
 
     return data
 
-# -------------------------------------------------------------------------------------------------------------------- #
 def map_steps_with_simulation_time(time_step=5e-4, total_number_of_steps=20000):
     """map between steps (0 ~ about 200000) and simulation time (0 ~ 100 ps)
        input:
@@ -51,8 +50,6 @@ def map_steps_with_simulation_time(time_step=5e-4, total_number_of_steps=20000):
 
     return time_span
 
-
-# ------------------------------------------------------------------------------------------------------------------- #
 def merge_all_xyz_into_one(xyz_folder):
     """merge all xyz files in one folder to a single extended xyz file
     """
