@@ -1,4 +1,6 @@
 from ase.io import write
+import MDAnalysis as mda
+from MDAnalysis.analysis.rdf import InterRDF
 import numpy as np
 import subprocess
 
@@ -29,6 +31,52 @@ def get_quantity_averages(quantities, mode='all'):
         index = np.where(np.abs(rate_of_change_quantities) <= 0.01 * max_change)[0][0]
 
     return np.mean(quantities[index:])
+
+def get_radial_distribution_function(typology_file, dcd_traj,
+                                     chemical_symbol_atom1,
+                                     chemical_symbol_atom2,
+                                     nbin=400,
+                                     cut_off=12,
+                                     start_index=None,
+                                     skip_index=None,
+                                     end_index=None):
+    """get radial distribution function (RDF) from MD simulation
+
+       input:
+       typology_file: (xyz or pdb) initial configuration of the system
+       dcd_traj: (dcd) trajectory in dcd format
+       nbin (int): number of bins for RDFs
+       cut_off (float): cut off radius for RFS
+       start_index (int): starting index to compute RDFS
+       skip_index (int):  frames to skip while computing RDFS
+       end_index (int):   ending index to compute RDFS 
+
+
+       output:
+       g(RDF objects): RDF objects
+
+       Plotting usage:
+       plot(g.results.bins, g.results.rdf)
+    """
+
+    # Create universe object
+    u = mda.Universe(typology_file, dcd_traj)
+
+    # Get atom groups
+    atom_group1 = u.select_atoms('name ' + chemical_symbol_atom1)
+    atom_group2 = u.select_atoms('name ' + chemical_symbol_atom2)
+
+    # Define individual rdf objects and perform calculations
+    g11 = InterRDF(atom_group1, atom_group1, nbin, range=(0, cut_off))
+    g11.run(start_index, skip_index, end_index)
+
+    g22 = InterRDF(atom_group2, atom_group2, nbin, range=(0, cut_off))
+    g22.run(start_index, skip_index, end_index)
+
+    g12 = InterRDF(atom_group1, atom_group2, nbin, range=(0, cut_off))
+    g12.run(start_index, skip_index, end_index)
+    return g11, g22, g12
+
 
 def grep_from_md_output(md_output_file_name, time_step_in_ps, total_number_of_steps, patten_str, row_index_to_skip=0):
     """grep several observables from snap md output
