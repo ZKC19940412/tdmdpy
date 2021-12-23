@@ -1,1 +1,4 @@
-xx
+TODO's:
+# Example 0: Monitor Basic Properties and Take Running Averages
+# Example 1: Compute Diffusion Coefficients from NPT Runs
+# Example 2: Compute RDFs from NVT Runs
