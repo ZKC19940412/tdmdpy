@@ -20,7 +20,6 @@ def delete_specific_line(file_name, key_words):
 
     new_file.close()
 
-# -------------------------------------------------------------------------------------------------------------------- #
 def replaceAll(file, searchExp, replaceExp):
     """replace specific content in one text file
               input:
