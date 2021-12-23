@@ -1,7 +1,6 @@
 ase
 MDAnalysis
 numpy>=1.16
-pylab
 scipy==1.4.1
 tidynamics
 
