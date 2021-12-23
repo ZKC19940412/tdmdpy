@@ -18,6 +18,8 @@ try:
 except:
     long_description = None
 
+with open('requirements.txt') as f:
+    requirements = f.read().splitlines()
 
 setup(
     # Self-descriptive entries which should always be present
