@@ -55,7 +55,7 @@ def get_radial_distribution_function(typology_file, dcd_traj,
        output:
        g(RDF objects): RDF objects
 
-       Plotting usage:
+       plotting usage:
        plot(g.results.bins, g.results.rdf)
     """
 
