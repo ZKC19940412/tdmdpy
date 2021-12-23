@@ -2,34 +2,31 @@ from ase.io import write
 import numpy as np
 import subprocess
 
-def get_quantity_aveages(quantities, mode = 'all'):
-    
-    """get averages of quantitiy derived from MD simulation
+def get_quantity_averages(quantities, mode='all'):
+    """get averages of quantity derived from MD simulation
        input:
-       qunatities: (ndarray) quantitiy derived from MD simulation
+       quantities: (ndarray) quantity derived from MD simulation
        mode: (str) different modes to take averages
 
        average: (float) average of quantities
     """
 
     if mode not in ['all', 'diff']:
-        print('Only "all" or "diff" are valid mode strings!' )
+        print('Only "all" or "diff" are valid mode strings!')
         exit()
 
-   
     if mode == 'all':
         return np.mean(quantities)
-    
-    if mode == 'diff' :
 
+    if mode == 'diff':
         # Find where to perform average by using derivatives
         rate_of_change_quantities = np.diff(quantities)
-        max_change = np.abs(rate_of_change_quantities).max()    
-        # If no treshold is given then use 10 % of max change as bar        
+        max_change = np.abs(rate_of_change_quantities).max()
+
+        # 10 % of max change as bar is used as the standard
         index = np.where(np.abs(rate_of_change_quantities) <= 0.01 * max_change)[0][0]
 
-    return np.mean(quantities[index:])    
-
+    return np.mean(quantities[index:])
 
 def grep_from_md_output(md_output_file_name, time_step_in_ps, total_number_of_steps, patten_str, row_index_to_skip=0):
     """grep several observables from snap md output
