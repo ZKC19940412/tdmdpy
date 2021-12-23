@@ -8,6 +8,7 @@ def get_quantity_averages(quantities, mode='all'):
        quantities: (ndarray) quantity derived from MD simulation
        mode: (str) different modes to take averages
 
+       output:
        average: (float) average of quantities
     """
 
