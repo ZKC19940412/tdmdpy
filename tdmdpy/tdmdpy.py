@@ -1,13 +1,12 @@
 from ase.io import write
 import MDAnalysis as mda
-from MDAnalysis.analysis.msd import msd
 from MDAnalysis.analysis.rdf import InterRDF
 import numpy as np
 from scipy.stats import linregress
 import subprocess
 
-def get_diffusion_coefficients(typology_file,
-                               dcd_traj, sample_rate,
+def get_diffusion_coefficients(MSD, 
+                               sample_rate,
                                time_step,
                                msd_type_str='xyz',
                                is_fft=True,
@@ -20,11 +19,8 @@ def get_diffusion_coefficients(typology_file,
          from MD simulation: https://docs.mdanalysis.org/stable/documentation_pages/analysis/msd.html
 
          input:
-         typology_file: (xyz or pdb) initial configuration of the system
-         dcd_traj: (dcd) trajectory in dcd format
+         MSD: (MSD MDAnalysis object) Object to config MSD calculations
          time_step: (float) time step, usually in ps
-         msd_type_str (str) Type of msd, available ones include, x, y, z, xy, xz, xyz
-         is_fft：(bool) whether to compute MSD uing fft
          start_index (int): starting index to compute MSD
          skip_index (int): frames to skip while computing MSD
          end_index (int): ending index to compute MSD
@@ -37,10 +33,7 @@ def get_diffusion_coefficients(typology_file,
          msd (ndarray): MSD
     """
 
-    # Create universe object
-    u = mda.Universe(typology_file, dcd_traj)
-
-    MSD = msd.EinsteinMSD(u, select='all', msd_type=msd_type_str, fft=is_fft)
+    # Perform calculation of MSD from the input object
     MSD.run(start_index, end_index, skip_index)
 
     # Declare total time step
@@ -89,7 +82,8 @@ def get_quantity_averages(quantities, mode='diff'):
         max_change = np.abs(rate_of_change_quantities).max()
 
         # 10 % of max change is used as the standard
-        index = np.where(np.abs(rate_of_change_quantities) <= 0.01 * max_change)[0][0]
+        index = np.where(np.abs(
+            rate_of_change_quantities) <= 0.01 * max_change)[0][0]
 
     return np.mean(quantities[index:])
 
