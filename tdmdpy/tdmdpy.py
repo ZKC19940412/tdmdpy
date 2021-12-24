@@ -112,6 +112,7 @@ def grep_from_md_output(md_output_file_name, time_step_in_ps, total_number_of_st
 
 def map_steps_with_simulation_time(time_step=5e-4, total_number_of_steps=20000):
     """map between steps (0 ~ about 200000) and simulation time (0 ~ 100 ps)
+       
        input:
        time_step: (float) time step in fs
 
@@ -129,10 +130,45 @@ def map_steps_with_simulation_time(time_step=5e-4, total_number_of_steps=20000):
 
     return time_span
 
-def merge_all_xyz_into_one(xyz_folder):
+def merge_all_xyz_into_one(xyz_folder, output_xyz_name = 'out.xyz', is_sort_xyz_names = False):
     """merge all xyz files in one folder to a single extended xyz file
+    
+        input:
+        xyz_folder: (str) name of the folder contains xyz foles
+        output_xyz_name: (str) name of the merged xyz file
+        is_sort_xyz_names: (bool) Whether to sort xyz files by numerical string in the names
+    
     """
-    xyz_files = sorted(os.listdir(xyz_folder))
+    if is_sort_xyz_names:
+        xyz_files = sorted(os.listdir(xyz_folder))
+    
+    else:
+        xyz_files = os.listdir(xyz_folder)
+
+
     for xyz_file in xyz_files:
         xyz = read(xyz_folder + '/' + xyz_file)
-        write('out.xyz', xyz, append=True)
+        write(output_xyz_name, xyz, append=True)
+
+
+def score_property(prediction, ground_truth, tolerance, property_str ):
+    """score static property of water using the score function
+       from Carlos Vega et al.
+       DOI: 10.1039/c1cp22168j
+
+       input:
+       prediction: (float) predicted property from snap md
+       ground_truth: (float) experimental properties
+       tolerance: (float) tolerance factor in %
+       property_str (str) name of predicted property
+
+       output:
+       final score (int) final score of the property,
+
+    """
+    base_score = np.round(10 - np.abs(100*(
+        prediction - ground_truth)/(ground_truth*tolerance)))
+    final_score = np.max([base_score, 0])
+    print('Predicted ' + property_str + ' earned a score of %d' %final_score)
+
+    return final_score

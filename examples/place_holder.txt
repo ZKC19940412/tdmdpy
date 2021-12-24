@@ -1,3 +1,0 @@
-TODO's:
-# Example 1: Compute Diffusion Coefficients from NPT Runs
-# Example 2: Compute RDFs from NVT Runs
