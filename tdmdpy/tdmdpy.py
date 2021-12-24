@@ -65,8 +65,6 @@ def get_diffusion_coefficients(typology_file,
     else:
         return D, lagtimes, msd
 
-
-
 def get_quantity_averages(quantities, mode='diff'):
     """get averages of quantity derived from MD simulation
        
