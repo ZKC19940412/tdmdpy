@@ -4,7 +4,7 @@ from MDAnalysis.analysis.rdf import InterRDF
 import numpy as np
 import subprocess
 
-def get_quantity_averages(quantities, mode='all'):
+def get_quantity_averages(quantities, mode='diff'):
     """get averages of quantity derived from MD simulation
        
        input:
@@ -30,7 +30,7 @@ def get_quantity_averages(quantities, mode='all'):
         # 10 % of max change as bar is used as the standard
         index = np.where(np.abs(rate_of_change_quantities) <= 0.01 * max_change)[0][0]
 
-    return np.mean(quantities[index:])
+    return np.mean(quantities[index:]), index
 
 def get_radial_distribution_function(typology_file, dcd_traj,
                                      chemical_symbol_atom1,
