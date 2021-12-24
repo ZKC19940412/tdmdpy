@@ -41,6 +41,7 @@ def get_radial_distribution_function(typology_file, dcd_traj,
                                      skip_index=None,
                                      end_index=None):
     """get radial distribution function (RDF) from MD simulation
+       https://docs.mdanalysis.org/1.0.0//documentation_pages/analysis/rdf.html
 
        input:
        typology_file: (xyz or pdb) initial configuration of the system
@@ -68,13 +69,13 @@ def get_radial_distribution_function(typology_file, dcd_traj,
 
     # Define individual rdf objects and perform calculations
     g11 = InterRDF(atom_group1, atom_group1, nbin, range=(0, cut_off))
-    g11.run(start_index, skip_index, end_index)
+    g11.run(start_index, end_index, skip_index)
 
     g22 = InterRDF(atom_group2, atom_group2, nbin, range=(0, cut_off))
-    g22.run(start_index, skip_index, end_index)
+    g22.run(start_index, end_index, skip_index)
 
     g12 = InterRDF(atom_group1, atom_group2, nbin, range=(0, cut_off))
-    g12.run(start_index, skip_index, end_index)
+    g12.run(start_index, end_index, skip_index)
     return g11, g22, g12
 
 
