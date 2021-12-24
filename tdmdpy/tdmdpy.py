@@ -29,7 +29,7 @@ def get_quantity_averages(quantities, mode='diff'):
         rate_of_change_quantities = np.diff(quantities)
         max_change = np.abs(rate_of_change_quantities).max()
 
-        # 10 % of max change as bar is used as the standard
+        # 10 % of max change is used as the standard
         index = np.where(np.abs(rate_of_change_quantities) <= 0.01 * max_change)[0][0]
 
     return np.mean(quantities[index:])
@@ -94,7 +94,7 @@ def grep_from_md_output(md_output_file_name, time_step_in_ps, total_number_of_st
 
     """
 
-    # create key variable for the command line
+    # Create key variable for the command line
     # + 1 for the header
     total_number_of_lines_to_grep = int(time_step_in_ps * total_number_of_steps + 1)
 
