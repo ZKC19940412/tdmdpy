@@ -5,7 +5,7 @@ TDMDpy
 [![codecov](https://codecov.io/gh/REPLACE_WITH_OWNER_ACCOUNT/TDMDpy/branch/master/graph/badge.svg)](https://codecov.io/gh/REPLACE_WITH_OWNER_ACCOUNT/TDMDpy/branch/master)
 
 
-TDMDpy: A python package to calculate thermodynamic quantities from LAMMPS MD trajectories using python.
+TDMDpy: A python package to calculate thermodynamic quantities from LAMMPS MD trajectories.
 
 ### Feautres
 * Radial Distribution Functinos
