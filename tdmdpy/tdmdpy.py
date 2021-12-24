@@ -1,6 +1,6 @@
 from ase.io import write
 import MDAnalysis as mda
-import MDAnalysis.analysis.msd as msd
+from MDAnalysis.analysis.msd import msd
 from MDAnalysis.analysis.rdf import InterRDF
 import numpy as np
 from scipy.stats import linregress
