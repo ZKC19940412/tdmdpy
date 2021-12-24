@@ -7,6 +7,10 @@ TDMDpy
 
 A python package to postprocess MD simulations from LAMMPS.
 
+### Feautres
+* Radial Distribution Functinos
+* Mean Square Displacement & Self-Diffusion Coefficients
+
 ### Copyright
 
 Copyright (c) 2021, Zekun Chen
