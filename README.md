@@ -10,6 +10,7 @@ A python package to postprocess MD simulations from LAMMPS.
 ### Feautres
 * Radial Distribution Functinos
 * Mean Square Displacement & Self-Diffusion Coefficients
+* [Scoring thermodynamic properties based on experimental references](https://pubs.rsc.org/en/content/articlelanding/2011/cp/c1cp22168j)
 
 ### Copyright
 
