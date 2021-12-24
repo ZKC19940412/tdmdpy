@@ -6,6 +6,67 @@ import numpy as np
 from scipy.stats import linregress
 import subprocess
 
+def get_diffusion_coefficients(typology_file,
+                               dcd_traj, sample_rate,
+                               time_step,
+                               msd_type_str='xyz',
+                               is_fft=True,
+                               start_index=None,
+                               skip_index=None,
+                               end_index=None,
+                               is_return_fit_para=False,
+                               is_verbose=False):
+    """get mean square displacement (MSD) and self-diffusion coefficients (D) 
+         from MD simulation: https://docs.mdanalysis.org/stable/documentation_pages/analysis/msd.html
+
+         input:
+         typology_file: (xyz or pdb) initial configuration of the system
+         dcd_traj: (dcd) trajectory in dcd format
+         time_step: (float) time step, usually in ps
+         msd_type_str (str) Type of msd, available ones include, x, y, z, xy, xz, xyz
+         is_fft：(bool) whether to compute MSD uing fft
+         start_index (int): starting index to compute MSD
+         skip_index (int): frames to skip while computing MSD
+         end_index (int): ending index to compute MSD
+         is_return_fit_para：(bool) whether to return linear fitting parameter to obtin diffusion coefficients
+         is_verbose: (bool) whether to print out fitted diffusion coefficients
+
+         output:
+         D (float): diffusion coefficients in 10^-5 cm/s
+         lagtimes (ndarray): Time-axis for MSD
+         msd (ndarray): MSD
+    """
+
+    # Create universe object
+    u = mda.Universe(typology_file, dcd_traj)
+
+    MSD = msd.EinsteinMSD(u, select='all', msd_type=msd_type_str, fft=is_fft)
+    MSD.run(start_index, end_index, skip_index)
+
+    # Declare total time step
+    time_step_total = time_step * sample_rate
+
+    # Exact msd and lag times from MSD object
+    msd = MSD.results.timeseries
+    nframes = MSD.n_frames
+    lagtimes = np.arange(nframes) * time_step_total
+
+    # Define linear model and extract D from slope
+    linear_model = linregress(lagtimes, msd)
+    slope = linear_model.slope
+
+    # dim_fac is 3 as we computed a 3D msd with 'xyz'
+    D = slope * 1 / (2 * MSD.dim_fac) / time_step_total
+    if is_verbose:
+        print('Diffusion coefficients in 10^-5 cm/s: %.1f' % D)
+
+    if is_return_fit_para:
+        return D, linear_model, lagtimes, msd
+    else:
+        return D, lagtimes, msd
+
+
+
 def get_quantity_averages(quantities, mode='diff'):
     """get averages of quantity derived from MD simulation
        
