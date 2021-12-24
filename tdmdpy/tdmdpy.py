@@ -1,7 +1,9 @@
 from ase.io import write
 import MDAnalysis as mda
+import MDAnalysis.analysis.msd as msd
 from MDAnalysis.analysis.rdf import InterRDF
 import numpy as np
+from scipy.stats import linregress
 import subprocess
 
 def get_quantity_averages(quantities, mode='diff'):
