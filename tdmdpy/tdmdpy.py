@@ -10,9 +10,9 @@ def get_diffusion_coefficients(MSD,
                                time_step,
                                msd_type_str='xyz',
                                is_fft=True,
-                               start_index=None,
+                               start_index=0,
                                skip_index=None,
-                               end_index=None,
+                               end_index=-1,
                                is_return_fit_para=False,
                                is_verbose=False):
     """get mean square displacement (MSD) and self-diffusion coefficients (D) 
