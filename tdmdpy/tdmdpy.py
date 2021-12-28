@@ -10,9 +10,9 @@ def get_diffusion_coefficients(MSD,
                                time_step,
                                msd_type_str='xyz',
                                is_fft=True,
-                               start_index=0,
+                               start_index=None,
                                skip_index=None,
-                               end_index=-1,
+                               end_index=None,
                                is_return_fit_para=False,
                                is_verbose=False):
     """get mean square displacement (MSD) and self-diffusion coefficients (D) 
@@ -94,7 +94,8 @@ def get_radial_distribution_function(typology_file, dcd_traj,
                                      cut_off=12,
                                      start_index=None,
                                      skip_index=None,
-                                     end_index=None):
+                                     end_index=None,
+                                     is_save_rdf = True):
     """get radial distribution function (RDF) from MD simulation
        https://docs.mdanalysis.org/1.0.0//documentation_pages/analysis/rdf.html
 
@@ -106,7 +107,7 @@ def get_radial_distribution_function(typology_file, dcd_traj,
        start_index (int): starting index to compute RDFS
        skip_index (int):  frames to skip while computing RDFS
        end_index (int):   ending index to compute RDFS 
-
+       is_save_rdf (bool): whether to save resultant rdf into .dat file
 
        output:
        g(RDF objects): RDF objects
@@ -131,6 +132,11 @@ def get_radial_distribution_function(typology_file, dcd_traj,
 
     g12 = InterRDF(atom_group1, atom_group2, nbin, range=(0, cut_off))
     g12.run(start_index, end_index, skip_index)
+
+    if is_save_rdf:
+        np.savetxt('g11.dat', np.vstack([g11.results.bins, g11.results.rdf]).T)
+        np.savetxt('g22.dat', np.vstack([g22.results.bins, g22.results.rdf]).T)
+        np.savetxt('g12.dat', np.vstack([g12.results.bins, g12.results.rdf]).T)
     return g11, g22, g12
 
 
