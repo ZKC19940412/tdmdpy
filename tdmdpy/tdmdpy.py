@@ -169,7 +169,7 @@ def grep_from_md_output(md_output_file_name, time_step_in_ps, total_number_of_st
 
     return data
 
-def load_nth_frames(total_xyz_name, frame_index = -1, reference_chemical_symbols, frame_output_format = 'pdb'):
+def load_nth_frames(total_xyz_name, reference_chemical_symbols, frame_index = -1, frame_output_format = 'pdb'):
     """load nth frame from the xyz output dumped from lammps simulation
 
        input:
