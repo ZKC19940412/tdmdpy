@@ -1,4 +1,4 @@
-from ase.io import write
+from ase.io import read, write
 import MDAnalysis as mda
 from MDAnalysis.analysis.rdf import InterRDF
 import numpy as np
