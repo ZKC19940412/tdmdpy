@@ -188,7 +188,6 @@ def load_nth_frames(total_xyz_name, frame_index = -1, reference_chemical_symbols
     selected_frames = configurations[frame_index]
     
     # Fix misread issue, workable even it does not happen
-    print('Chemical symbol missreading is detecting, fixing missread...')
     for i in range(len(selected_frames)):
       selected_frames[i].set_chemical_symbols(reference_chemical_symbols)
       selected_frames[i].set_pbc([True, True, True])
