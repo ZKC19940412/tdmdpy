@@ -169,6 +169,32 @@ def grep_from_md_output(md_output_file_name, time_step_in_ps, total_number_of_st
 
     return data
 
+def load_nth_frames(total_xyz_name, frame_index = -1, reference_chemical_symbols, frame_output_format = 'pdb'):
+    """load nth frame from the xyz output dumped from lammps simulation
+
+       input:
+       total_xyz_name: (str) name of the lammps dumped xyz file
+       frame_index: (int) index to siginfy which frame to take from md
+       reference_chemical_symbols: (nd str array) nd string array
+       frame_ouput_format: (str) format of the output frames
+
+       output:
+       coordinate of nth frame in specific format
+
+    """
+    
+    # Load in the whole configuration and extract specific frames
+    configurations = read(total_xyz_name, index = ':', format = 'lammps-dump-text')
+    selected_frames = configurations[frame_index]
+    
+    # Fix misread issue, workable even it does not happen
+    print('Chemical symbol missreading is detecting, fixing missread...')
+    for i in range(len(selected_frames)):
+      selected_frames[i].set_chemical_symbols(reference_chemical_symbols)
+      selected_frames[i].set_pbc([True, True, True])
+    write('extracted_frames' + frame_output_format, selected_frames)
+
+        
 def score_property(prediction, ground_truth, tolerance, property_str ):
     """score static property of water using the score function
        from Carlos Vega et al.
