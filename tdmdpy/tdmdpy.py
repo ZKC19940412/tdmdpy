@@ -5,7 +5,8 @@ import numpy as np
 from scipy.stats import linregress
 import subprocess
 
-def get_diffusion_coefficients(MSD, 
+
+def get_diffusion_coefficients(MSD,
                                sample_rate,
                                time_step,
                                msd_type_str='xyz',
@@ -15,7 +16,7 @@ def get_diffusion_coefficients(MSD,
                                end_index=None,
                                is_return_fit_para=False,
                                is_verbose=False):
-    """get mean square displacement (MSD) and self-diffusion coefficients (D) 
+    """get mean square displacement (MSD) and self-diffusion coefficients (D)
          from MD simulation: https://docs.mdanalysis.org/stable/documentation_pages/analysis/msd.html
 
          input:
@@ -24,7 +25,7 @@ def get_diffusion_coefficients(MSD,
          start_index (int): starting index to compute MSD
          skip_index (int): frames to skip while computing MSD
          end_index (int): ending index to compute MSD
-         is_return_fit_para：(bool) whether to return linear fitting parameter to obtin diffusion coefficients
+         is_return_fit_paraï¼š(bool) whether to return linear fitting parameter to obtin diffusion coefficients
          is_verbose: (bool) whether to print out fitted diffusion coefficients
 
          output:
@@ -58,9 +59,10 @@ def get_diffusion_coefficients(MSD,
     else:
         return D, lagtimes, msd
 
+
 def get_quantity_averages(quantities, mode='diff'):
     """get averages of quantity derived from MD simulation
-       
+
        input:
        quantities: (ndarray) quantity derived from MD simulation
        mode: (str) different modes to take averages
@@ -87,6 +89,7 @@ def get_quantity_averages(quantities, mode='diff'):
 
     return np.mean(quantities[index:])
 
+
 def get_radial_distribution_function(typology_file, dcd_traj,
                                      chemical_symbol_atom1,
                                      chemical_symbol_atom2,
@@ -95,7 +98,7 @@ def get_radial_distribution_function(typology_file, dcd_traj,
                                      start_index=None,
                                      skip_index=None,
                                      end_index=None,
-                                     is_save_rdf = True):
+                                     is_save_rdf=True):
     """get radial distribution function (RDF) from MD simulation
        https://docs.mdanalysis.org/1.0.0//documentation_pages/analysis/rdf.html
 
@@ -106,7 +109,7 @@ def get_radial_distribution_function(typology_file, dcd_traj,
        cut_off (float): cut off radius for RFS
        start_index (int): starting index to compute RDFS
        skip_index (int):  frames to skip while computing RDFS
-       end_index (int):   ending index to compute RDFS 
+       end_index (int):   ending index to compute RDFS
        is_save_rdf (bool): whether to save resultant rdf into .dat file
 
        output:
@@ -169,7 +172,8 @@ def grep_from_md_output(md_output_file_name, time_step_in_ps, total_number_of_st
 
     return data
 
-def load_nth_frames(total_xyz_name, reference_chemical_symbols, frame_index = -1, frame_output_format = 'pdb'):
+
+def load_nth_frames(total_xyz_name, reference_chemical_symbols, frame_index=-1, frame_output_format='pdb'):
     """load nth frame from the xyz output dumped from lammps simulation
 
        input:
@@ -182,19 +186,27 @@ def load_nth_frames(total_xyz_name, reference_chemical_symbols, frame_index = -1
        coordinate of nth frame in specific format
 
     """
-    
-    # Load in the whole configuration and extract specific frames
-    configurations = read(total_xyz_name, index = ':', format = 'lammps-dump-text')
-    selected_frames = configurations[frame_index]
-    
-    # Fix misread issue, workable even it does not happen
-    for i in range(len(selected_frames)):
-      selected_frames[i].set_chemical_symbols(reference_chemical_symbols)
-      selected_frames[i].set_pbc([True, True, True])
-    write('extracted_frames' + frame_output_format, selected_frames)
 
-        
-def score_property(prediction, ground_truth, tolerance, property_str ):
+    # Load in the whole configuration and extract specific frames
+    configurations = read(total_xyz_name, index=':', format='lammps-dump-text')
+    selected_frames = configurations[frame_index]
+
+    # Fix misread issue, workable even it does not happen
+    if type(frame_index) != int:
+        for i in range(len(selected_frames)):
+            selected_frames[i].set_chemical_symbols(reference_chemical_symbols)
+        selected_frames[i].set_pbc([True, True, True])
+
+    else:
+        selected_frames.set_chemical_symbols(reference_chemical_symbols)
+        selected_frames.set_pbc([True, True, True])
+    if frame_output_format == '.lmp':
+        write('extracted_frames' + frame_output_format, selected_frames, format = 'lammps-data')
+    else:
+        write('extracted_frames' + frame_output_format, selected_frames)
+
+
+def score_property(prediction, ground_truth, tolerance, property_str):
     """score static property of water using the score function
        from Carlos Vega et al.
        DOI: 10.1039/c1cp22168j
@@ -209,9 +221,9 @@ def score_property(prediction, ground_truth, tolerance, property_str ):
        final score (int) final score of the property,
 
     """
-    base_score = np.round(10 - np.abs(100*(
-        prediction - ground_truth)/(ground_truth*tolerance)))
+    base_score = np.round(10 - np.abs(100 * (
+            prediction - ground_truth) / (ground_truth * tolerance)))
     final_score = np.max([base_score, 0])
-    print('Predicted ' + property_str + ' earned a score of %d' %final_score)
+    print('Predicted ' + property_str + ' earned a score of %d' % final_score)
 
     return final_score
