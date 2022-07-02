@@ -90,9 +90,9 @@ def get_quantity_averages(quantities, mode='diff'):
     return np.mean(quantities[index:])
 
 
-def get_radial_distribution_function(typology_file, dcd_traj,
-                                     chemical_symbol_atom1,
-                                     chemical_symbol_atom2,
+def get_radial_distribution_function(typology_file, dcd_traj=None,
+                                     chemical_symbol_atom1='H',
+                                     chemical_symbol_atom2='O',
                                      nbin=400,
                                      cut_off=12,
                                      start_index=None,
@@ -120,7 +120,10 @@ def get_radial_distribution_function(typology_file, dcd_traj,
     """
 
     # Create universe object
-    u = mda.Universe(typology_file, dcd_traj)
+    if not dcd_traj:
+      u = mda.Universe(typology_file, dcd_traj)
+    else:
+      u = mda.Universe(typology_file)
 
     # Get atom groups
     atom_group1 = u.select_atoms('name ' + chemical_symbol_atom1)
