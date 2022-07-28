@@ -77,5 +77,5 @@ if __name__ == "__main__":
     plot(time, mass_density_md_traj / 1000.0)
     xlabel('Time (ps)')
     ylabel(r'$\rho (g/cm^{3}$')
-    savefig('Density_profile_NPT.png', dpi=300)
+    savefig('Density_profile_NPT_NEP.png', dpi=300)
     show()
