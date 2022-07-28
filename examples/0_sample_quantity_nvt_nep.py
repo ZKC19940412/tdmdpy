@@ -1,11 +1,10 @@
 from ase.io import read, write
-from pylab import *
 import numpy as np
+from pylab import *
 from tdmdpy import compute_all_rdfs
-from tdmdpy import get_quantity_averages
 from tdmdpy import decompose_dump_xyz
+from tdmdpy import get_quantity_averages
 from tdmdpy import load_with_cell
-
 
 def set_fig_properties(ax_list):
     tl = 6
@@ -19,6 +18,7 @@ def set_fig_properties(ax_list):
 
 
 if __name__ == "__main__":
+    
     #  Set up Figure Styles
     aw = 2
     fs = 16
