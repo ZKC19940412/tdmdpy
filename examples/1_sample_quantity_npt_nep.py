@@ -1,10 +1,9 @@
 from ase.io import read, write
-from pylab import *
 import mdtraj as mdt
 import numpy as np
-#from tdmdpy import get_diffusion_coefficients
-from tdmdpy import get_quantity_averages
+from pylab import *
 from tdmdpy import decompose_dump_xyz
+from tdmdpy import get_quantity_averages
 from tdmdpy import load_with_cell
 from tdmdpy import process_diffusion_coefficients
 from tdmdpy import score_property
