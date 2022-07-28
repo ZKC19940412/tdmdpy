@@ -65,5 +65,5 @@ if __name__ == "__main__":
     plot(time, temperature)
     xlabel('Time (ps)')
     ylabel('Temperature (K)')
-    savefig('Temperature_profile_NVT.png', dpi=300)
+    savefig('Temperature_profile_NVT_NEP.png', dpi=300)
     show()
