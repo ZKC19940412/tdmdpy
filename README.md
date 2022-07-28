@@ -15,6 +15,7 @@ TDMDpy: A python package to calculate thermodynamic quantities from MD trajector
 * Radial distribution functinos
 * Self diffusion coefficients
 * [Scoring thermodynamic properties based on experimental references](https://pubs.rsc.org/en/content/articlelanding/2011/cp/c1cp22168j)
+* Single-point energy and force predictions with ML potentials
 
 ### Copyright
 
