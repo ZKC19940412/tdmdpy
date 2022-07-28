@@ -95,6 +95,7 @@ def decompose_dump_xyz(dump_xyz_str, pos_xyz_str='pos.xyz',
     write(frc_xyz_str, frc_atom_objects)
     write(vel_xyz_str, vel_atom_objects)
 
+
 def get_unique_atom_types(topology):
     """Obtain unique atom types from a reference topology.
 
@@ -223,47 +224,39 @@ def grep_from_md_output(md_output_file_name, time_step_in_ps, total_number_of_st
     return data
 
 
-def load_with_cell(filename, reference_topo, start=None, stop=None, step=None, **kwargs):
+def load_with_cell(filename, unitcell_length_matrix, unitcell_angle_matrix,
+                   start=None, stop=None, step=None, **kwargs):
     """Load a trajectory and inject cell dimensions from a topology PDB file if not present.
     All arguments and keyword arguments are passed on to `mdtraj.load`. The `top`
     keyword argument is used load a PDB file and get cell information from it.
 
     input:
-    file_name (str):
+    file_name (str): Name of the trajectory
+    unitcell_length_matrix: (nd array) Matrix of unit cell length in nm, with shape of (n_frames,3)
+    unitcell_angle_matrix: (nd array) Matrix of unit cell angle in degree, with shape of (n_frames,3)
+    start, stop, step: indices of frames along a trajectory
 
     """
-
     # load the "topology frame" to get cell dimensions
-    #top = kwargs.get("top")
-    #if top is not None and isinstance(top, str):
+    top = kwargs.get("top")
+    if top is not None and isinstance(top, str):
         # load topology frame - just the first one from the file, in case there are more frames
-    #    frame_top = mdt.load_frame(top, 0)
-    #    unitcell_lengths = frame_top.unitcell_lengths
-    #    unitcell_angles = frame_top.unitcell_angles
-    #    if (unitcell_lengths is None) or (unitcell_angles is None):
-    #        raise ValueError("Frame providing topology is missing cell information.")
-    #else:
-    #    raise ValueError("Provide a PDB with cell dimensions.")
+        frame_top = mdt.load_frame(top, 0)
+        unitcell_lengths = frame_top.unitcell_lengths
+        unitcell_angles = frame_top.unitcell_angles
+        if (unitcell_lengths is None) or (unitcell_angles is None):
+            raise ValueError("Frame providing topology is missing cell information.")
+    else:
+        raise ValueError("Provide a PDB with cell dimensions.")
 
     # load the trajectory itself
-    #trj = mdt.load(filename, **kwargs)
-    #trj = trj[start:stop:step]
-    #trj_raw_xyz_in_angstrom = trj.xyz.copy()
+    trj = mdt.load(filename, **kwargs)
+    trj = trj[start:stop:step]
+
     # inject the cell information
-    #len_trj = len(trj)
-    #trj.unitcell_lengths = unitcell_lengths.repeat(len_trj, axis=0)
-    #trj.unitcell_angles = unitcell_angles.repeat(len_trj, axis=0)
-    
-    # Derive length of trajectory
-    len_trj = len(md.load(filename, **kwargs)[start:stop:step])
-    
-    # Load trj frame by frame so as to add proper unit cell
-    for i in range(len_trj):
-        frame_reference_topo = mdt.load_frame(reference_topo, i)
-        trj_tmp = md.load_frame(filename, i)
-        trj_tmp.unitcell_lengths = frame_reference_topo.unitcell_lengths
-        trj_tmp.unitcell_angles = frame_reference_topo.unitcell_angles
-        trj = mdt.join(trj_tmp)
+    trj.unitcell_lengths = unitcell_length_matrix
+    trj.unitcell_angles = unitcell_angle_matrix
+
     return trj
 
 
@@ -289,7 +282,7 @@ def load_nth_frames(total_xyz_name, reference_chemical_symbols, frame_index=-1, 
     if type(frame_index) != int:
         for i in range(len(selected_frames)):
             selected_frames[i].set_chemical_symbols(reference_chemical_symbols)
-        selected_frames[i].set_pbc([True, True, True])
+            selected_frames[i].set_pbc([True, True, True])
 
     else:
         selected_frames.set_chemical_symbols(reference_chemical_symbols)
@@ -300,7 +293,7 @@ def load_nth_frames(total_xyz_name, reference_chemical_symbols, frame_index=-1, 
         write('extracted_frames' + frame_output_format, selected_frames)
 
 
-def make_atom_object(atomic_string, coordinate,cell):
+def make_atom_object(atomic_string, coordinate, cell):
     """Create simple atom object based on chemical symbol and "position-like" vectors
 
            input:
