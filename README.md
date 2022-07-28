@@ -8,9 +8,12 @@ TDMDpy
 TDMDpy: A python package to calculate thermodynamic quantities from MD trajectories.
 
 ### Feautres
+* Isothermal Compressibility
+* Orthobaric Densities
 * Perform molecular dynamic simulation with prefitted ML potentials using [ASE](https://wiki.fysik.dtu.dk/ase/tutorials/md/md.html)
-* Mean Square Displacement & Self-Diffusion Coefficients
+* Mean Square Displacement
 * Radial Distribution Functinos
+* Self Diffusion Coefficients
 * [Scoring thermodynamic properties based on experimental references](https://pubs.rsc.org/en/content/articlelanding/2011/cp/c1cp22168j)
 
 ### Copyright
