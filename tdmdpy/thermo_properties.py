@@ -1,5 +1,6 @@
 from ase import Atoms
 from ase.io import read, write
+from atom_manipulate import get_unique_atom_types, load_with_cell,make_atom_object
 import mdtraj as mdt
 import numpy as np
 from scipy.stats import linregress
@@ -108,61 +109,6 @@ def get_unique_atom_types(topology):
     atom_types = list(set(atom.name for atom in topology.atoms))
 
     return atom_types
-
-
-# def get_diffusion_coefficients(trj,
-#                                sample_rate,
-#                                time_step,
-#                                dimension_factor=3,
-#                                start=None,
-#                                stop=None,
-#                                step=None,
-#                                is_return_fit_para=False,
-#                                is_verbose=False):
-#     """get mean square displacement (MSD) and self-diffusion coefficients (D)
-#     https://www.mdtraj.org/1.9.8.dev0/api/generated/mdtraj.rmsd.html#mdtraj.rmsd
-#
-#          input:
-#          trj: (mdtraj object) A trajectory from MD simulation
-#          time_step: (float) time step, usually in ps
-#          start_index (int): starting index to compute MSD
-#          skip_index (int): frames to skip while computing MSD
-#          end_index (int): ending index to compute MSD
-#          is_return_fit_paraÃ¯Â¼Å¡(bool) whether to return linear fitting parameter to obtin diffusion coefficients
-#          is_verbose: (bool) whether to print out fitted diffusion coefficients
-#
-#          output:
-#          D (float): diffusion coefficients in 10^-5 cm/s
-#          lagtimes (ndarray): Time-axis for MSD
-#          msd (ndarray): MSD
-#     """
-#
-#     # Pre-center coordinates
-#     trj = trj[start:stop:step]
-#
-#     # Declare total time step
-#     time_step_total = time_step * sample_rate
-#
-#     # Exact msd and lag times from MSD object
-#     # MSD = RMSD ^2
-#     # 100.0 makes msd goes from nm^2 to angstrom^2
-#     msd = 100.0 * mdt.rmsd(trj, trj, 0)**2
-#     nframes = len(msd)
-#     lagtimes = np.arange(nframes) * time_step_total
-#
-#     # Define linear model and extract D from slope
-#     linear_model = linregress(lagtimes, msd)
-#     slope = linear_model.slope
-#
-#     # dimension_factor = 3 as we computed a 3D msd
-#     D = slope * 1 / (2 * dimension_factor) / time_step_total
-#     if is_verbose:
-#         print('Diffusion coefficients in 10^-5 cm/s: %.1f' % D)
-#
-#     if is_return_fit_para:
-#         return D, linear_model, lagtimes, msd
-#     else:
-#         return D, lagtimes, msd
 
 
 def get_quantity_averages(quantities, mode='diff'):
