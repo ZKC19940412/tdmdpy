@@ -110,26 +110,25 @@ def get_unique_atom_types(topology):
     return atom_types
 
 
-# def get_diffusion_coefficients(MSD,
+# def get_diffusion_coefficients(trj,
 #                                sample_rate,
 #                                time_step,
-#                                msd_type_str='xyz',
-#                                is_fft=True,
-#                                start_index=None,
-#                                skip_index=None,
-#                                end_index=None,
+#                                dimension_factor=3,
+#                                start=None,
+#                                stop=None,
+#                                step=None,
 #                                is_return_fit_para=False,
 #                                is_verbose=False):
 #     """get mean square displacement (MSD) and self-diffusion coefficients (D)
-#          from MD simulation: https://docs.mdanalysis.org/stable/documentation_pages/analysis/msd.html
+#     https://www.mdtraj.org/1.9.8.dev0/api/generated/mdtraj.rmsd.html#mdtraj.rmsd
 #
 #          input:
-#          MSD: (MSD MDAnalysis object) Object to config MSD calculations
+#          trj: (mdtraj object) A trajectory from MD simulation
 #          time_step: (float) time step, usually in ps
 #          start_index (int): starting index to compute MSD
 #          skip_index (int): frames to skip while computing MSD
 #          end_index (int): ending index to compute MSD
-#          is_return_fit_paraï¼š(bool) whether to return linear fitting parameter to obtin diffusion coefficients
+#          is_return_fit_paraÃ¯Â¼Å¡(bool) whether to return linear fitting parameter to obtin diffusion coefficients
 #          is_verbose: (bool) whether to print out fitted diffusion coefficients
 #
 #          output:
@@ -138,23 +137,25 @@ def get_unique_atom_types(topology):
 #          msd (ndarray): MSD
 #     """
 #
-#     # Perform calculation of MSD from the input object
-#     MSD.run(start_index, end_index, skip_index)
+#     # Pre-center coordinates
+#     trj = trj[start:stop:step]
 #
 #     # Declare total time step
 #     time_step_total = time_step * sample_rate
 #
 #     # Exact msd and lag times from MSD object
-#     msd = MSD.results.timeseries
-#     nframes = MSD.n_frames
+#     # MSD = RMSD ^2
+#     # 100.0 makes msd goes from nm^2 to angstrom^2
+#     msd = 100.0 * mdt.rmsd(trj, trj, 0)**2
+#     nframes = len(msd)
 #     lagtimes = np.arange(nframes) * time_step_total
 #
 #     # Define linear model and extract D from slope
 #     linear_model = linregress(lagtimes, msd)
 #     slope = linear_model.slope
 #
-#     # dim_fac is 3 as we computed a 3D msd with 'xyz'
-#     D = slope * 1 / (2 * MSD.dim_fac) / time_step_total
+#     # dimension_factor = 3 as we computed a 3D msd
+#     D = slope * 1 / (2 * dimension_factor) / time_step_total
 #     if is_verbose:
 #         print('Diffusion coefficients in 10^-5 cm/s: %.1f' % D)
 #
@@ -231,10 +232,7 @@ def load_with_cell(filename, unitcell_length_matrix, unitcell_angle_matrix,
     keyword argument is used load a PDB file and get cell information from it.
 
     input:
-    file_name (str): Name of the trajectory
-    unitcell_length_matrix: (nd array) Matrix of unit cell length in nm, with shape of (n_frames,3)
-    unitcell_angle_matrix: (nd array) Matrix of unit cell angle in degree, with shape of (n_frames,3)
-    start, stop, step: indices of frames along a trajectory
+    file_name (str):
 
     """
     # load the "topology frame" to get cell dimensions
@@ -265,9 +263,9 @@ def load_nth_frames(total_xyz_name, reference_chemical_symbols, frame_index=-1, 
 
        input:
        total_xyz_name: (str) name of the lammps dumped xyz file
-       frame_index: (int) index to siginfy which frame to take from md
+       frame_index: (int) index to signify which frame to take from md
        reference_chemical_symbols: (nd str array) nd string array
-       frame_ouput_format: (str) format of the output frames
+       frame_output_format: (str) format of the output frames
 
        output:
        coordinate of nth frame in specific format
@@ -291,6 +289,38 @@ def load_nth_frames(total_xyz_name, reference_chemical_symbols, frame_index=-1, 
         write('extracted_frames' + frame_output_format, selected_frames, format='lammps-data')
     else:
         write('extracted_frames' + frame_output_format, selected_frames)
+
+
+def process_diffusion_coefficients(sdc_out_str, dimension_factor=3,
+                                   is_verbose=True):
+    """Process self-diffusion coefficients computed from GPUMD
+
+       input:
+       sdc_out_str: (str) name of the sdc file
+       dimension factor: (int) dimension factor, 3 for all 3 dimensions
+       is_verbose: (bool) whether to print out fitted diffusion coefficients
+
+       output:
+       D: (float) Diffusion coefficients in 10^-5 cm^2/s
+    """
+    # Load in data from sdc.out
+    data = np.loadtxt(sdc_out_str)
+
+    # Extract correlation time and self-diffusion coefficients along each direction
+    correlation_time = data[:, 0]
+    D_x = get_quantity_averages(data[:, 4])
+    D_y = get_quantity_averages(data[:, 5])
+    D_z = get_quantity_averages(data[:, 6])
+
+    # Obtain average along each direction
+    # 10.0 makes it goes from A^2/ps to 10^-5 cm^2/s
+    D = 10.0*(D_x + D_y + D_z) / dimension_factor
+
+    # Display results in original form:
+    # 10.0 makes it goes from A^2/ps to 10^-5 cm^2/s
+    if is_verbose:
+        print('Diffusion coefficients in 10^-5 cm^2/s: %.1f' % D)
+    return D
 
 
 def make_atom_object(atomic_string, coordinate, cell):
