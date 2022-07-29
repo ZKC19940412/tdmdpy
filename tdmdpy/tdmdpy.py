@@ -289,7 +289,7 @@ def process_diffusion_coefficients(sdc_out_str, dimension_factor=3,
     # 10.0 makes it goes from A^2/ps to 10^-5 cm^2/s
     if is_verbose:
         print('Diffusion coefficients in 10^-5 cm^2/s: %.1f' % D)
-    return D
+    return D, D_x, D_y, D_z, correlation_time
 
 
 def score_property(prediction, ground_truth, tolerance, property_str):
