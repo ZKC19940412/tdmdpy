@@ -1,6 +1,7 @@
 import fileinput
 import sys
 
+
 def delete_specific_line(file_name, key_words):
     """delete specific line from one text file
            input:
@@ -20,13 +21,14 @@ def delete_specific_line(file_name, key_words):
 
     new_file.close()
 
+
 def replace_line(file, line_num, text):
     """replace specific content in one text file based on line number
        input:
        file: (str) name of the file
        line_num: (int) line number
        text: (str) content to replace
-    
+
     """
     lines = open(file, 'r').readlines()
     lines[line_num] = text
@@ -34,7 +36,8 @@ def replace_line(file, line_num, text):
     out.writelines(lines)
     out.close()
 
- def replaceAll(file, searchExp, replaceExp):
+
+def replaceAll(file, searchExp, replaceExp):
     """replace specific content in one text file
               input:
               file: (str) name of the file

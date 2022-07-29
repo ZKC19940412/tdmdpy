@@ -1,7 +1,10 @@
 """A python package for postprocessing MD simulations from LAMMPS."""
 
 # Add imports here
-from .tdmdpy import *
+from .atom_manipulate import *
+from .thermodynamic_properties import *
+from .mlps import *
+from .utility import *
 
 # Handle versioneer
 from ._version import get_versions

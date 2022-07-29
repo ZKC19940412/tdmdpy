@@ -1,11 +1,10 @@
 from ase.io import read, write
 import numpy as np
 from pylab import *
-from tdmdpy import compute_all_rdfs
-from tdmdpy import decompose_dump_xyz
-from tdmdpy import get_quantity_averages
-from tdmdpy import load_with_cell
-
+from tdmdpy.atom_manipulate import decompose_dump_xyz
+from tdmdpy.atom_manipulate import load_with_cell
+from tdmdpy.thermodynamic_properties import compute_all_rdfs
+from tdmdpy.thermodynamic_properties import get_quantity_averages
 
 def set_fig_properties(ax_list):
     tl = 6
