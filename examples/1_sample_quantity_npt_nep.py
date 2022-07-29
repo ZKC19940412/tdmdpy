@@ -2,12 +2,11 @@ from ase.io import read, write
 import mdtraj as mdt
 import numpy as np
 from pylab import *
-from tdmdpy import compute_hydrodynamic_radius
-from tdmdpy import decompose_dump_xyz
-from tdmdpy import get_quantity_averages
-from tdmdpy import load_with_cell
-from tdmdpy import process_diffusion_coefficients
-from tdmdpy import score_property
+from tdmdpy.atom_manipulate import decompose_dump_xyz
+from tdmdpy.atom_manipulate import load_with_cell
+from tdmdpy.thermodynamic_properties import get_quantity_averages
+from tdmdpy.thermodynamic_properties import process_diffusion_coefficients
+from tdmdpy.thermodynamic_properties import score_property
 
 
 def set_fig_properties(ax_list):
@@ -55,8 +54,7 @@ if __name__ == "__main__":
     # Inject Reference PDB file into the trajectory'
     pos_trajectory = load_with_cell('pos.xyz', unit_cell_length_matrix, unit_cell_angle_matrix,
                                     top='coord_liquid_water_1566_atoms.pdb')
-    print(compute_hydrodynamic_radius(pos_trajectory))
-    #exit()
+    
     # Compute mass density
     mass_density = mdt.density(pos_trajectory)
     print('Average density in g/cm^3:  %.3f' % get_quantity_averages(mass_density / 1000.0))
