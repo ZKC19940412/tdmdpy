@@ -3,6 +3,7 @@ from ase import Atoms
 from ase.calculators.tip3p import TIP3P, rOH, angleHOH
 from ase.constraints import FixBondLengths
 from ase.io.trajectory import Trajectory
+from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
 from ase.md import Langevin
 import ase.units as units
 import numpy as np
@@ -36,15 +37,16 @@ if __name__ == "__main__":
                                     for i in range(3**3)
                                     for j in [0, 1, 2]])
 
-    tag = 'tip3p_27mol_equil'
+    MaxwellBoltzmannDistribution(atoms, temperature_K=300)
+    tag = 'tip3p_27_molcues_equilibrate'
     atoms.calc = TIP3P(rc=4.5)
-    md = Langevin(atoms, 1 * units.fs, temperature=300 * units.kB,
+    md = Langevin(atoms, 1 * units.fs, temperature_K=300 * units.kB,
                   friction=0.01, logfile=tag + '.log')
 
     trajectory = Trajectory(tag + '.traj', 'w', atoms)
     md.attach(trajectory.write, interval=1)
 
-    # Run MD simulation for 4 ps
-    md.run(4000)
+    # Run MD simulation for 2 ps
+    md.run(2000)
 
     print('Initial water structure equilibrated with TIP3P is obtained!')
