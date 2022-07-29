@@ -21,7 +21,6 @@ def set_fig_properties(ax_list):
 
 
 if __name__ == "__main__":
-
     #  Set up Figure Styles
     aw = 2
     fs = 16
@@ -42,8 +41,8 @@ if __name__ == "__main__":
 
     # Extract box dimension from thermo.out
     # length scale goes from angstrom to nm
-    unitcell_length_matrix = data[:, -3:] / 10.0
-    unitcell_angle_matrix = 90 * ones_like(unitcell_length_matrix)
+    unit_cell_length_matrix = data[:, -3:] / 10.0
+    unit_cell_angle_matrix = 90 * ones_like(unit_cell_length_matrix)
 
     # Print average temperature
     print('Average temperature in K:  %.3f' % get_quantity_averages(temperature))
@@ -52,18 +51,19 @@ if __name__ == "__main__":
     decompose_dump_xyz('dump.xyz')
 
     # Inject Reference PDB file into the trajectory'
-    pos_trajectory = load_with_cell('pos.xyz', unitcell_length_matrix, unitcell_angle_matrix,
+    pos_trajectory = load_with_cell('pos.xyz', unit_cell_length_matrix, unit_cell_angle_matrix,
                                     top='coord_liquid_water_1566_atoms.pdb')
 
     # Compute mass density
-    mass_density_md_traj = mdt.density(pos_trajectory)
-    print('Average density in g/cm^3:  %.3f' % get_quantity_averages(mass_density_md_traj / 1000.0))
-    score_property(get_quantity_averages(mass_density_md_traj / 1000.0), 0.997, 0.5, property_str='density at STP')
+    mass_density = mdt.density(pos_trajectory)
+    print('Average density in g/cm^3:  %.3f' % get_quantity_averages(mass_density / 1000.0))
+    score_property(get_quantity_averages(mass_density / 1000.0), 0.997, 0.5, property_str='density at STP')
 
     # Process diffusion coefficients from sdc.out
-    D = process_diffusion_coefficients('sdc.out', dimension_factor=3, is_verbose=True)
-    score_property(np.log(D*1e-5), -10.68, 0.5, property_str='diffusion coefficient')
-    print('lnD: %.2f' %np.log(D*1e-5)) 
+    D, D_x, D_y, D_z, correlation_time = process_diffusion_coefficients('sdc.out', dimension_factor=3, is_verbose=True)
+    score_property(np.log(D * 1e-5), -10.68, 0.5, property_str='diffusion coefficient')
+    print('lnD: %.2f' % np.log(D * 1e-5))
+
     figure()
     set_fig_properties([gca()])
     plot(time, temperature)
@@ -74,8 +74,18 @@ if __name__ == "__main__":
 
     figure()
     set_fig_properties([gca()])
-    plot(time, mass_density_md_traj / 1000.0)
+    plot(time, mass_density / 1000.0)
     xlabel('Time (ps)')
     ylabel(r'$\rho (g/cm^{3}$')
     savefig('Density_profile_NPT_NEP.png', dpi=300)
+    show()
+
+    figure()
+    set_fig_properties([gca()])
+    plot(correlation_time, D_x, label=r'$D_{x}$')
+    plot(correlation_time, D_y, label=r'$D_{y}$')
+    plot(correlation_time, D_z, label=r'$D_{z}$')
+    xlabel('Correlation time (ps)')
+    ylabel(r'$D (\AA^{2}/ps)$')
+    savefig('Diffusion_coefficients_NPT_NEP.png', dpi=300)
     show()
