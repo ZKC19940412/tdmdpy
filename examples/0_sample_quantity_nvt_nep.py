@@ -6,6 +6,7 @@ from tdmdpy import decompose_dump_xyz
 from tdmdpy import get_quantity_averages
 from tdmdpy import load_with_cell
 
+
 def set_fig_properties(ax_list):
     tl = 6
     tw = 2
@@ -39,8 +40,8 @@ if __name__ == "__main__":
 
     # Extract box dimension from thermo.out
     # length scale goes from angstrom to nm
-    unitcell_length_matrix = data[:, -3:]/10.0
-    unitcell_angle_matrix = 90*ones_like(unitcell_length_matrix)
+    unit_cell_length_matrix = data[:, -3:] / 10.0
+    unit_cell_angle_matrix = 90 * ones_like(unit_cell_length_matrix)
 
     # Print average temperature
     print('Average temperature in K:  %.3f' % get_quantity_averages(temperature))
@@ -49,16 +50,18 @@ if __name__ == "__main__":
     decompose_dump_xyz('dump.xyz')
 
     # Inject Reference PDB file into the trajectory'
-    pos_trajectory = load_with_cell('pos.xyz', unitcell_length_matrix, unitcell_angle_matrix, top='coord_liquid_water_1566_atoms.pdb')
-    vel_trajectory = load_with_cell('vel.xyz', unitcell_length_matrix, unitcell_angle_matrix, top='coord_liquid_water_1566_atoms.pdb')
+    pos_trajectory = load_with_cell('pos.xyz', unit_cell_length_matrix, unit_cell_angle_matrix,
+                                    top='coord_liquid_water_1566_atoms.pdb')
+    vel_trajectory = load_with_cell('vel.xyz', unit_cell_length_matrix, unit_cell_angle_matrix,
+                                    top='coord_liquid_water_1566_atoms.pdb')
 
     # Compute RDFS
-    rdfs_from_md_traj = compute_all_rdfs(pos_trajectory, n_bins=400, is_save_rdf=False)
+    rdfs = compute_all_rdfs(pos_trajectory, n_bins=400, is_save_rdf=False)
 
     # Save RDFS for each pair, multiple by 10 to go from nm to angstrom for length unit.
-    np.savetxt('nep_goo_T_300K.out', np.vstack([rdfs_from_md_traj['O-O'][0][:] * 10, rdfs_from_md_traj['O-O'][1][:]]).T)
-    np.savetxt('nep_goh_T_300K.out', np.vstack([rdfs_from_md_traj['O-H'][0][:] * 10, rdfs_from_md_traj['O-H'][1][:]]).T)
-    np.savetxt('nep_ghh_T_300K.out', np.vstack([rdfs_from_md_traj['H-H'][0][:] * 10, rdfs_from_md_traj['H-H'][1][:]]).T)
+    np.savetxt('nep_goo_T_300K.out', np.vstack([rdfs['O-O'][0][:] * 10, rdfs['O-O'][1][:]]).T)
+    np.savetxt('nep_goh_T_300K.out', np.vstack([rdfs['O-H'][0][:] * 10, rdfs['O-H'][1][:]]).T)
+    np.savetxt('nep_ghh_T_300K.out', np.vstack([rdfs['H-H'][0][:] * 10, rdfs['H-H'][1][:]]).T)
 
     figure()
     set_fig_properties([gca()])
