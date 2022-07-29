@@ -2,6 +2,7 @@ from ase.io import read, write
 import mdtraj as mdt
 import numpy as np
 from pylab import *
+from tdmdpy import compute_hydrodynamic_radius
 from tdmdpy import decompose_dump_xyz
 from tdmdpy import get_quantity_averages
 from tdmdpy import load_with_cell
@@ -53,11 +54,12 @@ if __name__ == "__main__":
     # Inject Reference PDB file into the trajectory'
     pos_trajectory = load_with_cell('pos.xyz', unit_cell_length_matrix, unit_cell_angle_matrix,
                                     top='coord_liquid_water_1566_atoms.pdb')
-
+    print(compute_hydrodynamic_radius(pos_trajectory))
+    #exit()
     # Compute mass density
     mass_density = mdt.density(pos_trajectory)
     print('Average density in g/cm^3:  %.3f' % get_quantity_averages(mass_density / 1000.0))
-    score_property(get_quantity_averages(mass_density / 1000.0), 0.997, 0.5, property_str='density at STP')
+    score_property(get_quantity_averages(mass_density / 1000.0), 0.997, 0.5, property_str='density at 298K, 0 bar')
 
     # Process diffusion coefficients from sdc.out
     D, D_x, D_y, D_z, correlation_time = process_diffusion_coefficients('sdc.out', dimension_factor=3, is_verbose=True)
@@ -87,5 +89,6 @@ if __name__ == "__main__":
     plot(correlation_time, D_z, label=r'$D_{z}$')
     xlabel('Correlation time (ps)')
     ylabel(r'$D (\AA^{2}/ps)$')
+    legend(loc='best')
     savefig('Diffusion_coefficients_NPT_NEP.png', dpi=300)
     show()

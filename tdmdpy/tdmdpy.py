@@ -2,6 +2,7 @@ from ase import Atoms
 from ase.io import read, write
 import mdtraj as mdt
 import numpy as np
+from scipy.spatial.distance import pdist
 import subprocess
 
 
@@ -59,6 +60,44 @@ def compute_all_rdfs(trj, n_bins=150, is_save_rdf=True, **kwargs):
                 np.savetxt('g' + str(t1) + '-' + str(t2) + '.dat', np.vstack([r, g_r]).T)
 
     return rdfs_all
+
+
+def compute_hydrodynamic_radius(trj):
+    """Compute hydrodynamic radius (Rh) using Kirkwood definition.
+       https://en.wikipedia.org/wiki/Hydrodynamic_radius
+
+       input:
+       trj: (mdtraj object) A trajectory from MD simulation
+
+       output:
+       Rh_list: (float) hydrodynamic radius in angstrom along the whole trajectory
+
+    """
+    # Preset empty list for Rh intake
+    Rh_list = []
+    
+    # Load in coordinate along the whole trajectory
+    full_coordinate = trj.xyz
+    
+    for i in range(full_coordinate.shape[0]):
+        
+        # Derive number of atoms
+        number_of_atoms = full_coordinate[i].shape[0]
+
+        # Calculate ensemble average of the inverse distance
+        coordinate_in_angstrom = 10.0 * full_coordinate[i]
+        pair_wise_distances = pdist(coordinate_in_angstrom)
+        inverse_distances = 1 / pair_wise_distances
+
+        # Clean up diagonal of inverse distances and
+        # compute ensemble average
+        #np.fill_diagonal(inverse_distances, 0)
+        ensemble_average_inverse_distances = inverse_distances.sum()
+
+        # Express Rh
+        Rh = 2 * number_of_atoms ** 2 / ensemble_average_inverse_distances
+        Rh_list.append(Rh)
+    return Rh_list
 
 
 def decompose_dump_xyz(dump_xyz_str, pos_xyz_str='pos.xyz',
@@ -277,13 +316,13 @@ def process_diffusion_coefficients(sdc_out_str, dimension_factor=3,
 
     # Extract correlation time and self-diffusion coefficients along each direction
     correlation_time = data[:, 0]
-    D_x = get_quantity_averages(data[:, 4])
-    D_y = get_quantity_averages(data[:, 5])
-    D_z = get_quantity_averages(data[:, 6])
+    D_x = data[:, 4]
+    D_y = data[:, 5]
+    D_z = data[:, 6]
 
     # Obtain average along each direction
     # 10.0 makes it goes from A^2/ps to 10^-5 cm^2/s
-    D = 10.0 * (D_x + D_y + D_z) / dimension_factor
+    D = 10.0 * (get_quantity_averages(D_x) + get_quantity_averages(D_y) + get_quantity_averages(D_z)) / dimension_factor
 
     # Display results in original form:
     # 10.0 makes it goes from A^2/ps to 10^-5 cm^2/s
