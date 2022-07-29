@@ -32,9 +32,9 @@ if __name__ == "__main__":
                                        tag='nep_27_molcues_nvt_production',
                                        calculator=nep_calculator,
                                        T_initial=300, T_final=300, T_tau=100,
-                                       time_step_val=1, total_step=1000)
+                                       time_step_val=1, total_step=10000)
     toc = time.perf_counter()
-    print(f"NVT simulation for 1 ps using NEP potential takes {toc - tic:0.4f} seconds real time.")
+    print(f"NVT simulation for 10 ps using NEP potential takes {toc - tic:0.4f} seconds real time.")
 
     # Define SNAP calculator under LAMMPSlib
     # lammps_inputs = {
