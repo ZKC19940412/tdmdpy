@@ -3,6 +3,7 @@
 # Add imports here
 from .atom_manipulate import *
 from .thermodynamic_properties import *
+from .mlps import *
 from .utility import *
 
 # Handle versioneer
