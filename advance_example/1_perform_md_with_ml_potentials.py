@@ -35,16 +35,3 @@ if __name__ == "__main__":
                                        time_step_val=1, total_step=10000)
     toc = time.perf_counter()
     print(f"NVT simulation for 10 ps using NEP potential takes {toc - tic:0.4f} seconds real time.")
-
-    # Define SNAP calculator under LAMMPSlib
-    # lammps_inputs = {
-    #    'lmpcmds': [
-    #        'pair_style snap',
-    #        'pair_coeff * * H2O_pot.snapcoeff H2O_pot.snapparam H O'],
-    #    'keep_alive': True}
-    # snap_calculator = LAMMPSlib(**lammps_inputs)
-    # nvt_simulation_snap = md_simulator(atoms, 'NVT', 'berendsen',
-    #                                   tag='snap_192_molecules_nvt_production',
-    #                                   calculator=snap_calculator,
-    #                                   T_initial=300, T_final=300, T_tau=100,
-    #                                   time_step_val=1, total_step=10000)
