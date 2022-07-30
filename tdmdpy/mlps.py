@@ -126,5 +126,5 @@ def single_point_energy_force_prediction(number_of_configurations, calculator,
 
     print('Energy RMSE (meV/molecule): %.3f ' % (
             atoms_per_molecule * 1e3 * mean_squared_error(per_atom_E_vector, per_atom_E_predictions_vector) ** 0.5))
-    print('Force RMSE from nep.txt (meV/Ã…): %.3f ' % (
+    print('Force RMSE (meV/Å): %.3f ' % (
             1e3 * mean_squared_error(F_full_vector, F_predictions_full_vector) ** 0.5))
