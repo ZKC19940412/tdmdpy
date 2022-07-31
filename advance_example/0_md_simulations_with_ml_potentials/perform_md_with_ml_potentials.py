@@ -25,6 +25,6 @@ if __name__ == "__main__":
     traj = Trajectory('nve_with_nep' + '.traj', 'w', atoms)
     dyn.attach(traj.write, interval=1)
     tic = time.perf_counter()
-    dyn.run(1000)
+    dyn.run(10000)
     toc = time.perf_counter()
-    print(f"NVE simulation for 1 ps with NEP potential takes {toc - tic:0.4f} seconds real time.")
+    print(f"NVE simulation for 10 ps with NEP potential takes {toc - tic:0.4f} seconds real time.")
