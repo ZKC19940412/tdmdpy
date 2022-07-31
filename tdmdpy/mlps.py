@@ -20,80 +20,6 @@ def extract_E_F_from_single_frame(truth_xyz, calculator_object, index):
     return per_atom_energy_truth, per_atom_energy_prediction, force_truth_vector, force_predict_vector
 
 
-def md_simulator(atoms, ensemble_str, thermostat_str,
-                 tag=None, calculator=None, rc_val=4.5,
-                 T_initial=None, T_final=None, T_tau=None,
-                 P_final=None, P_tau=None,
-                 time_step_val=1, total_step=1000):
-    """Perform MD simulation with machine learning (ML) potentials.
-
-           input:
-           atoms: (ASE atom object) ASE atom object containing the whole trajectory
-           ensemble_str: (str) Name of the ensemble
-           thermostat_str: (str) Name of thermostats
-           tag: (str) Tag for output log
-           calculator: (ASE calculator object) ML potential
-           rc_val: (float) cutoff distance used in TIP4P potential
-           T_initial: (float) Initial temperature
-           T_final: (float) Target temperature
-           T_tau (float): Temperature coupling constant
-           P_initial: (float) Initial pressure
-           P_final: (float) Target pressure
-           P_tau (float): pressure coupling constant
-           time_step_val (float): time step in fs
-           total_step （int）: Total number of steps
-
-           output:
-           md_simulation (ASE MD object)
-
-    """
-
-    # Set TIP4P as default calculator
-    if calculator is None:
-        calculator = TIP4P(rc=rc_val)
-
-    # Allocate calculator object into atoms
-    atoms.calc = calculator
-
-    # Set the momenta corresponding to initial temperature
-    MaxwellBoltzmannDistribution(atoms, temperature_K=T_initial)
-
-    # Initialize MD simulation based on ensemble_str
-    if ensemble_str == 'NVE':
-        from ase.md.verlet import VelocityVerlet
-
-        md_simulation = VelocityVerlet(atoms, time_step=time_step_val * units.fs, logfile=tag + '.log')
-
-    elif ensemble_str == 'NVT':
-        if thermostat_str == 'langevin':
-            from ase.md.langevin import Langevin
-            md_simulation = Langevin(atoms, timestep=time_step_val * units.fs,
-                                     temperature=T_final * units.kB,
-                                     friction=0.001, logfile=tag + '.log')
-
-        if thermostat_str == 'berendsen':
-            from ase.md.nvtberendsen import NVTBerendsen
-            md_simulation = NVTBerendsen(atoms, timestep=time_step_val * units.fs,
-                                         temperature=T_final * units.kB,
-                                         taut=T_tau * units.fs, logfile=tag + '.log')
-
-    elif ensemble_str == 'NPT':
-        if thermostat_str == 'berendsen':
-            from ase.md.nptberendsen import NPTBerendsen
-            md_simulation = NPTBerendsen(atoms, timestep=time_step_val * units.fs,
-                                         temperature=T_final * units.kB,
-                                         pressure_au=P_final,
-                                         taut=T_tau * units.fs,
-                                         taup=P_tau * units.fs,
-                                         logfile=tag + '.log')
-
-    trajectory = Trajectory(tag + '.traj', 'w', atoms)
-    md_simulation.attach(trajectory.write, interval=1)
-    md_simulation.run(total_step)
-
-    return md_simulation
-
-
 def single_point_energy_force_prediction(number_of_configurations, calculator,
                                          data_path,
                                          is_save_energy_and_force_file=False,
@@ -126,5 +52,5 @@ def single_point_energy_force_prediction(number_of_configurations, calculator,
 
     print('Energy RMSE (meV/molecule): %.3f ' % (
             atoms_per_molecule * 1e3 * mean_squared_error(per_atom_E_vector, per_atom_E_predictions_vector) ** 0.5))
-    print('Force RMSE (meV/Å): %.3f ' % (
+    print('Force RMSE (meV/A): %.3f ' % (
             1e3 * mean_squared_error(F_full_vector, F_predictions_full_vector) ** 0.5))

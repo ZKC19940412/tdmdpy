@@ -26,7 +26,3 @@ if __name__ == "__main__":
     single_point_energy_force_prediction(number_of_configurations, nep_calculator,
                                          data_path, atoms_per_molecule=3)
     
-    print('\n')
-    print('ML Potential : SNAP')
-    single_point_energy_force_prediction(number_of_configurations, snap_calculator,
-                                         data_path, atoms_per_molecule=3)
