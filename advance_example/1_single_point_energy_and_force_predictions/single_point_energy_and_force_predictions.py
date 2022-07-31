@@ -15,14 +15,6 @@ if __name__ == "__main__":
     # Define NEP calculator
     nep_calculator = NEP('nep.txt')
 
-    # Define SNAP calculator under LAMMPSlib
-    lammps_inputs = {
-       'lmpcmds': [
-           'pair_style snap',
-           'pair_coeff * * H2O_pot.snapcoeff H2O_pot.snapparam H O'],
-       'keep_alive': True}
-    snap_calculator = LAMMPSlib(**lammps_inputs)
     print('ML Potential : NEP')
     single_point_energy_force_prediction(number_of_configurations, nep_calculator,
                                          data_path, atoms_per_molecule=3)
-    
