@@ -70,7 +70,7 @@ if __name__ == "__main__":
     plot(time, temperature)
     xlabel('Time (ps)')
     ylabel('Temperature (K)')
-    savefig('Temperature_profile_NPT.png', dpi=300)
+    savefig('Temperature_profile_NPT_NEP.png', dpi=300)
     show()
 
     figure()
