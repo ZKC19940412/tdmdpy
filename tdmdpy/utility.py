@@ -26,7 +26,6 @@ def extract_sections_from_txt(file_name,
                               spacing=1,
                               section_index=1,
                               section_txt_name=None):
-
     """ extract information from part of the txt file
            input:
            file_name: (str) Name of the file
@@ -40,16 +39,22 @@ def extract_sections_from_txt(file_name,
     contents = file_object.readlines()
 
     # Derive start and end index from section index
-    start_index = (section_index - 1) * spacing
-    end_index = start_index + spacing
+    if section_index == 1:
+        start_index = 0
+        end_index = start_index + spacing
+    elif section_index > 1:
+        start_index = (section_index - 1) * spacing
+        end_index = start_index + spacing
 
     # Write section out
     if section_txt_name is None:
         section_txt_name = 'tmp_step_' + str(section_index) + '.txt'
-    new_file_object = open(section_txt_name, 'r')
-    for i in range(start_index, end_index + 1):
+    else:
+        section_txt_name += 'step_' + str(section_index) + '.txt'
+    new_file_object = open(section_txt_name, 'w')
+    for i in range(start_index, end_index):
         new_file_object.write(contents[i])
-            
+
 
 def replace_line(file_name, line_num, text):
     """replace specific content in one text file based on line number

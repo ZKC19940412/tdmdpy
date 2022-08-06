@@ -24,7 +24,6 @@ def single_point_energy_force_prediction(number_of_configurations, calculator,
                                          data_path,
                                          is_save_energy_and_force_file=False,
                                          atoms_per_molecule=3):
-
     # Preset lists for data intake
     per_atom_E_list = []
     per_atom_E_predictions_list = []
@@ -50,7 +49,10 @@ def single_point_energy_force_prediction(number_of_configurations, calculator,
         np.save('energy.npy', np.vstack([per_atom_E_vector, per_atom_E_predictions_vector]).T)
         np.save('force.npy', np.vstack([F_full_vector, F_predictions_full_vector]).T)
 
-    print('Energy RMSE (meV/molecule): %.3f ' % (
-            atoms_per_molecule * 1e3 * mean_squared_error(per_atom_E_vector, per_atom_E_predictions_vector) ** 0.5))
-    print('Force RMSE (meV/A): %.3f ' % (
-            1e3 * mean_squared_error(F_full_vector, F_predictions_full_vector) ** 0.5))
+    per_molecule_energy_RMSE = 1e3 * atoms_per_molecule * mean_squared_error(per_atom_E_vector,
+                                                                             per_atom_E_predictions_vector) ** 0.5
+    force_RMSE = 1e3 * mean_squared_error(F_full_vector, F_predictions_full_vector) ** 0.5
+    print('Energy RMSE (meV/molecule): %.3f ' % per_molecule_energy_RMSE)
+    print('Force RMSE (meV/A): %.3f ' % force_RMSE)
+    
+    return per_molecule_energy_RMSE, force_RMSE
