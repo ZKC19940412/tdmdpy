@@ -5,7 +5,7 @@ TDMDpy
 [![codecov](https://codecov.io/gh/REPLACE_WITH_OWNER_ACCOUNT/TDMDpy/branch/master/graph/badge.svg)](https://codecov.io/gh/REPLACE_WITH_OWNER_ACCOUNT/TDMDpy/branch/master)
 
 
-TDMDpy: A python package to calculate thermodynamic quantities from MD simulations wwith ML potentials.
+TDMDpy: A python package to calculate thermodynamic quantities from MD simulations with ML potentials.
 
 ### Feautres
 * Isothermal compressibility
