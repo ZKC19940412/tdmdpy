@@ -3,8 +3,8 @@ from ase.io import read, write
 from .atom_manipulate import decompose_dump_xyz, get_unique_atom_types, load_with_cell
 import mdtraj as mdt
 import numpy as np
-from scipy.spatial.distance import pdist
 import subprocess
+
 
 def compute_all_rdfs(trj, n_bins=150, is_save_rdf=True, **kwargs):
     """Computes the RDFs between all pairs of atom types in a trajectory.
@@ -62,42 +62,6 @@ def compute_all_rdfs(trj, n_bins=150, is_save_rdf=True, **kwargs):
     return rdfs_all
 
 
-# def compute_hydrodynamic_radius(trj):
-#     """Compute hydrodynamic radius (Rh) using Kirkwood definition.
-#        https://en.wikipedia.org/wiki/Hydrodynamic_radius
-# 
-#        input:
-#        trj: (mdtraj object) A trajectory from MD simulation
-# 
-#        output:
-#        Rh_list: (float) hydrodynamic radius in angstrom along the whole trajectory
-# 
-#     """
-#     # Preset empty list for Rh intake
-#     Rh_list = []
-# 
-#     # Load in coordinate along the whole trajectory
-#     full_coordinate = trj.xyz
-# 
-#     for i in range(full_coordinate.shape[0]):
-#         # Derive number of atoms
-#         number_of_atoms = full_coordinate[i].shape[0]
-# 
-#         # Calculate ensemble average of the inverse distance
-#         coordinate_in_angstrom = 10.0 * full_coordinate[i]
-#         pair_wise_distances = pdist(coordinate_in_angstrom)
-#         inverse_distances = 1 / pair_wise_distances
-# 
-#         # Clean up diagonal of inverse distances and
-#         # compute ensemble average
-#         # np.fill_diagonal(inverse_distances, 0)
-#         ensemble_average_inverse_distances = inverse_distances.sum()
-# 
-#         # Express Rh
-#         Rh = 2 * number_of_atoms ** 2 / ensemble_average_inverse_distances
-#         Rh_list.append(Rh)
-#     return Rh_list
-
 def get_quantity_averages(quantities, mode='diff'):
     """Get averages of quantity derived from MD simulation
 
@@ -126,6 +90,33 @@ def get_quantity_averages(quantities, mode='diff'):
             rate_of_change_quantities) <= 0.01 * max_change)[0][0]
 
     return np.mean(quantities[index:])
+
+
+def get_block_average_quantities(data_arr, n_block=10):
+    """Compute blocked average quantities.
+           input:
+           data: (ndarray) Array that contains the data
+           n_block: (int) Number of blocks
+
+
+           output:
+           block_average: (ndarray) Block-averaged quantities
+    """
+
+    # Denote array for block average quantities
+    block_average_quantities = np.zeros([n_block])
+
+    # Denote steps, interval
+    steps = len(data_arr)
+    k = 0
+    s = 0
+    interval = int(np.modf(steps / n_block)[1])
+    while k < n_block:
+        block_average_quantities[k] = np.mean(
+            data_arr[s:s + interval])
+        k += 1
+        s += interval
+    return block_average_quantities
 
 
 def grep_from_md_output(md_output_file_name, time_step_in_ps, total_number_of_steps, patten_str, row_index_to_skip=0):
@@ -190,8 +181,8 @@ def load_nth_frames(total_xyz_name, reference_chemical_symbols, frame_index=-1, 
     else:
         write('extracted_frames' + frame_output_format, selected_frames)
 
-def process_diffusion_coefficients(sdc_out_str, dimension_factor=3,
-                                   is_verbose=True):
+
+def process_diffusion_coefficients(sdc_out_str, dimension_factor=3, is_verbose=True):
     """Process self-diffusion coefficients computed from GPUMD
 
        input:
@@ -221,6 +212,7 @@ def process_diffusion_coefficients(sdc_out_str, dimension_factor=3,
         print('Diffusion coefficients in 10^-5 cm^2/s: %.1f' % D)
     return D, D_x, D_y, D_z, correlation_time
 
+
 def score_property(prediction, ground_truth, tolerance, property_str):
     """Score static property of water using the score function
        from Carlos Vega et al.
@@ -242,4 +234,3 @@ def score_property(prediction, ground_truth, tolerance, property_str):
     print('Predicted ' + property_str + ' earned a score of %d' % final_score)
 
     return final_score
-
