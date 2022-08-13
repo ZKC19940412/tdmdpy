@@ -21,6 +21,7 @@ def set_fig_properties(ax_list):
 
 
 if __name__ == "__main__":
+    
     #  Set up Figure Styles
     aw = 2
     fs = 16
