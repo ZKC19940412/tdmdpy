@@ -21,7 +21,6 @@ def set_fig_properties(ax_list):
 
 
 if __name__ == "__main__":
-    
     #  Set up Figure Styles
     aw = 2
     fs = 16
@@ -30,7 +29,7 @@ if __name__ == "__main__":
     matplotlib.rc('axes', linewidth=aw)
 
     # Denote sample rate and time step in ps
-    sample_rate = 1000
+    sample_rate = 100
     time_step_in_ps = 1e-3  # equal to 1 fs
 
     # Load in temperature data from thermo.out
@@ -54,23 +53,21 @@ if __name__ == "__main__":
     # Inject Reference PDB file into the trajectory'
     pos_trajectory = load_with_cell('pos.xyz', unit_cell_length_matrix, unit_cell_angle_matrix,
                                     top='coord_liquid_water_1566_atoms.pdb')
-    
+
     # Compute mass density
     mass_density = mdt.density(pos_trajectory)
     print('Average density in g/cm^3:  %.3f' % get_quantity_averages(mass_density / 1000.0))
-    score_property(get_quantity_averages(mass_density / 1000.0), 0.997, 0.5, property_str='density at 298K, 0 bar')
-
-    # Process diffusion coefficients from sdc.out
-    D, D_x, D_y, D_z, correlation_time = process_diffusion_coefficients('sdc.out', dimension_factor=3, is_verbose=True)
-    score_property(np.log(D * 1e-5), -10.68, 0.5, property_str='diffusion coefficient')
-    print('lnD: %.2f' % np.log(D * 1e-5))
+    score_property(get_quantity_averages(mass_density / 1000.0), 0.997, 0.5, property_str='density at STP')
+    print('Block-averaged density in g/cm^3 : %.3f' % get_quantity_averages(mass_density / 1000.0, mode='block').mean())
+    print('Stand deviation of density in g/cm^3: %.3f' % get_quantity_averages(
+        mass_density / 1000.0, mode='block').std())
 
     figure()
     set_fig_properties([gca()])
     plot(time, temperature)
     xlabel('Time (ps)')
     ylabel('Temperature (K)')
-    savefig('Temperature_profile_NPT_NEP.png', dpi=300)
+    savefig('Temperature_profile_NPT.png', dpi=300)
     show()
 
     figure()
@@ -79,15 +76,4 @@ if __name__ == "__main__":
     xlabel('Time (ps)')
     ylabel(r'$\rho (g/cm^{3}$')
     savefig('Density_profile_NPT_NEP.png', dpi=300)
-    show()
-
-    figure()
-    set_fig_properties([gca()])
-    plot(correlation_time, D_x, label=r'$D_{x}$')
-    plot(correlation_time, D_y, label=r'$D_{y}$')
-    plot(correlation_time, D_z, label=r'$D_{z}$')
-    xlabel('Correlation time (ps)')
-    ylabel(r'$D (\AA^{2}/ps)$')
-    legend(loc='best')
-    savefig('Diffusion_coefficients_NPT_NEP.png', dpi=300)
     show()
