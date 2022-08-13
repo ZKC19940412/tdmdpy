@@ -62,7 +62,7 @@ def compute_all_rdfs(trj, n_bins=150, is_save_rdf=True, **kwargs):
     return rdfs_all
 
 
-def get_quantity_averages(quantities, mode='diff'):
+def get_quantity_averages(quantities, mode='diff', n_block_val=None):
     """Get averages of quantity derived from MD simulation
 
        input:
@@ -73,14 +73,17 @@ def get_quantity_averages(quantities, mode='diff'):
        average: (float) average of quantities
     """
 
-    if mode not in ['all', 'diff']:
-        print('Only "all" or "diff" are valid mode strings!')
+    if mode not in ['block', 'diff']:
+        print('Only "block" or "diff" are valid mode strings!')
         exit()
 
-    if mode == 'all':
-        return np.mean(quantities)
+    if mode == 'block':
+        if n_block_val is None:
+            n_block_val = 10
+        return get_block_average_quantities(quantities, n_block_val)
 
     if mode == 'diff':
+        
         # Find where to perform average by using derivatives
         rate_of_change_quantities = np.diff(quantities)
         max_change = np.abs(rate_of_change_quantities).max()
