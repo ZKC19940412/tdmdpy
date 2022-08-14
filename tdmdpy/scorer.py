@@ -1,3 +1,6 @@
+from .ffscore import experimental_reference
+from .ffscore import tolerance
+
 def force_field_score_scheme(prediction, ground_truth, tolerance):
     """Score static property of water using the score function
        from Carlos Vega et al.
@@ -28,3 +31,4 @@ def compute_normal_percent_error(reference_val, model_val):
            Percent error with respect to reference
     """
     return 100.0 * np.abs((model_val - reference_val) / reference
+             
