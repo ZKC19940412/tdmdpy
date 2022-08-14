@@ -18,9 +18,40 @@ experimental_reference = {'delta_H_melt (kcal/mol)': 1.44,
                           'rho_II @ 123K, 1 bar (g/cm^3)': 1.19,
                           'rho_V @ 223K, 5.3 kbar (g/cm^3)': 1.283,
                           'rho_VI @ 225K, 11 kbar (g/cm^3)': 1.373,
+                          'rho_liquid @ 373K 10 Kbar (g/cm^3)': 1.201,
+                          'rho_liquid @ 373K 20 Kbar (g/cm^3)': 1.322,
                           'lnD_278K': -11.24,
                           'lnD_298K': -10.68,
                           'lnD_318K': -10.24,
                           'neta @ 298K, 1 bar (mpa * s)': 0.896,
                           'neta @ 373K 1 bar (mpa * s)': 0.284
                           }
+
+
+
+tolerance = {'delta_H_melt (kcal/mol)': 5,
+             'delta_H_vapor (kcal/mol)': 2.5,
+             'gamma_300K (mN/m)': 2.5,
+             'gamma_450K (mN/m)': 2.5,
+             'Tm (K)': 2.5,
+             'rho_liquid @ 298.15 K, 1.01325 bar (g/cm^3)': 0.5,
+             'rho_solid @ 273.15 K, 1.01325 bar (g/cm^3)': 0.5,
+             'dP/dT (bar/K)': 5,
+             'Tmax_rho (K)': 2.5,
+             'rho_liquid @ 400K, 1.01325 bar (g/cm^3)': 0.5,
+             'kappa_T @ 298K, 1 bar (Mbar^-1)': 5,
+             'Cp_liquid @ 298K, 1bar (cal/mol/K)': 5,
+             'Cp_ice @ 250K, 1 bar (cal/mol/k)': 5,
+             'rho_Ih @ 250K, 1 bar (g/cm^3)': 0.5,
+             'rho_II @ 123K, 1 bar (g/cm^3)': 0.5,
+             'rho_V @ 223K, 5.3 kbar (g/cm^3)': 0.5,
+             'rho_VI @ 225K, 11 kbar (g/cm^3)': 0.5,
+             'rho_liquid @ 373K 10 Kbar (g/cm^3)': 0.5,
+             'rho_liquid @ 373K 20 Kbar (g/cm^3)': 0.5,
+             'lnD_278K': 0.5,
+             'lnD_298K': 0.5,
+             'lnD_318K': 0.5,
+             'neta @ 298K, 1 bar (mpa * s)': 5,
+             'neta @ 373K 1 bar (mpa * s)': 5
+             }
+
