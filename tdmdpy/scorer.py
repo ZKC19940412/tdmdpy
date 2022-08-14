@@ -30,5 +30,5 @@ def compute_normal_percent_error(reference_val, model_val):
            output:
            Percent error with respect to reference
     """
-    return 100.0 * np.abs((model_val - reference_val) / reference
+    return 100.0 * np.abs((model_val - reference_val) / reference)
              
