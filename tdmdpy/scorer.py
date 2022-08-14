@@ -19,3 +19,14 @@ def score_property(prediction, ground_truth, tolerance, property_str):
     print('Predicted ' + property_str + ' earned a score of %d' % final_score)
 
     return final_score
+
+def compute_normal_percent_error(reference_val, model_val):
+    """Compute percent error based on scalar quantity
+           input:
+           reference_val: (float) reference value
+           model_val: (float) modelled value
+           
+           output:
+           Percent error with respect to reference
+        """
+    return 100.0 * np.abs((model_val - reference_val) / reference
