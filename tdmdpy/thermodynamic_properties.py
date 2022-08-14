@@ -79,11 +79,11 @@ def get_quantity_averages(quantities, mode='diff', n_block_val=None):
 
     if mode == 'block':
         if n_block_val is None:
+            # Default behavior is to take averages by splitting data into 10 blocks
             n_block_val = 10
         return get_block_average_quantities(quantities, n_block_val)
 
     if mode == 'diff':
-        
         # Find where to perform average by using derivatives
         rate_of_change_quantities = np.diff(quantities)
         max_change = np.abs(rate_of_change_quantities).max()
@@ -122,7 +122,9 @@ def get_block_average_quantities(data_arr, n_block=10):
     return block_average_quantities
 
 
-def grep_from_md_output(md_output_file_name, time_step_in_ps, total_number_of_steps, patten_str, row_index_to_skip=0):
+def grep_from_md_output(md_output_file_name, time_step_in_ps, 
+                        total_number_of_steps, patten_str, 
+                        row_index_to_skip=0):
     """Grep several observables from snap md output
 
        input:
@@ -150,39 +152,6 @@ def grep_from_md_output(md_output_file_name, time_step_in_ps, total_number_of_st
         print('Data can not be properly loaded! Check file manually for more details.')
 
     return data
-
-
-def load_nth_frames(total_xyz_name, reference_chemical_symbols, frame_index=-1, frame_output_format='pdb'):
-    """Load nth frame from the xyz output dumped from lammps simulation
-
-       input:
-       total_xyz_name: (str) name of the lammps dumped xyz file
-       frame_index: (int) index to signify which frame to take from md
-       reference_chemical_symbols: (nd str array) nd string array
-       frame_output_format: (str) format of the output frames
-
-       output:
-       coordinate of nth frame in specific format
-
-    """
-
-    # Load in the whole configuration and extract specific frames
-    configurations = read(total_xyz_name, index=':', format='lammps-dump-text')
-    selected_frames = configurations[frame_index]
-
-    # Fix misread issue, workable even it does not happen
-    if type(frame_index) != int:
-        for i in range(len(selected_frames)):
-            selected_frames[i].set_chemical_symbols(reference_chemical_symbols)
-            selected_frames[i].set_pbc([True, True, True])
-
-    else:
-        selected_frames.set_chemical_symbols(reference_chemical_symbols)
-        selected_frames.set_pbc([True, True, True])
-    if frame_output_format == '.lmp':
-        write('extracted_frames' + frame_output_format, selected_frames, format='lammps-data')
-    else:
-        write('extracted_frames' + frame_output_format, selected_frames)
 
 
 def process_diffusion_coefficients(sdc_out_str, dimension_factor=3, is_verbose=True):
@@ -214,26 +183,3 @@ def process_diffusion_coefficients(sdc_out_str, dimension_factor=3, is_verbose=T
     if is_verbose:
         print('Diffusion coefficients in 10^-5 cm^2/s: %.1f' % D)
     return D, D_x, D_y, D_z, correlation_time
-
-
-def score_property(prediction, ground_truth, tolerance, property_str):
-    """Score static property of water using the score function
-       from Carlos Vega et al.
-       DOI: 10.1039/c1cp22168j
-
-       input:
-       prediction: (float) predicted property from snap md
-       ground_truth: (float) experimental properties
-       tolerance: (float) tolerance factor in %
-       property_str: (str) name of predicted property
-
-       output:
-       final score: (int) final score of the property,
-
-    """
-    base_score = np.round(10 - np.abs(100 * (
-            prediction - ground_truth) / (ground_truth * tolerance)))
-    final_score = np.max([base_score, 0])
-    print('Predicted ' + property_str + ' earned a score of %d' % final_score)
-
-    return final_score
