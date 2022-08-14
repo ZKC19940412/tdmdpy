@@ -6,7 +6,7 @@ from .thermodynamic_properties import *
 from .mlps import *
 from .utility import *
 from .scorer import *
-from .ffscore import *
+from .experimetal_reference import *
 
 # Handle versioneer
 from ._version import get_versions
