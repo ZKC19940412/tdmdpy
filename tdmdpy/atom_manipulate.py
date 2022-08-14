@@ -35,6 +35,7 @@ def decompose_dump_xyz(dump_xyz_str, pos_xyz_str='pos.xyz',
     write(frc_xyz_str, frc_atom_objects)
     write(vel_xyz_str, vel_atom_objects)
 
+
 def get_unique_atom_types(topology):
     """Obtain unique atom types from a reference topology.
 
@@ -47,6 +48,7 @@ def get_unique_atom_types(topology):
     atom_types = list(set(atom.name for atom in topology.atoms))
 
     return atom_types
+
 
 def load_with_cell(filename, unitcell_length_matrix, unitcell_angle_matrix,
                    start=None, stop=None, step=None, **kwargs):
@@ -80,6 +82,7 @@ def load_with_cell(filename, unitcell_length_matrix, unitcell_angle_matrix,
 
     return trj
 
+
 def make_atom_object(atomic_string, coordinate, cell):
     """Create simple atom object based on chemical symbol and "position-like" vectors
 
@@ -105,4 +108,35 @@ def make_atom_object(atomic_string, coordinate, cell):
     return atoms
 
 
+def load_nth_frames(total_xyz_name, reference_chemical_symbols,
+                    frame_index=-1, frame_output_format='pdb'):
+    """Load nth frame from the xyz output dumped from lammps simulation
 
+       input:
+       total_xyz_name: (str) name of the lammps dumped xyz file
+       frame_index: (int) index to signify which frame to take from md
+       reference_chemical_symbols: (nd str array) nd string array
+       frame_output_format: (str) format of the output frames
+
+       output:
+       coordinate of nth frame in specific format
+
+    """
+
+    # Load in the whole configuration and extract specific frames
+    configurations = read(total_xyz_name, index=':', format='lammps-dump-text')
+    selected_frames = configurations[frame_index]
+
+    # Fix misread issue, workable even it does not happen
+    if type(frame_index) != int:
+        for i in range(len(selected_frames)):
+            selected_frames[i].set_chemical_symbols(reference_chemical_symbols)
+            selected_frames[i].set_pbc([True, True, True])
+
+    else:
+        selected_frames.set_chemical_symbols(reference_chemical_symbols)
+        selected_frames.set_pbc([True, True, True])
+    if frame_output_format == '.lmp':
+        write('extracted_frames' + frame_output_format, selected_frames, format='lammps-data')
+    else:
+        write('extracted_frames' + frame_output_format, selected_frames)
