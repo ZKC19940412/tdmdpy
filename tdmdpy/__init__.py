@@ -5,6 +5,8 @@ from .atom_manipulate import *
 from .thermodynamic_properties import *
 from .mlps import *
 from .utility import *
+from .scorer import *
+from .ffscore import *
 
 # Handle versioneer
 from ._version import get_versions
