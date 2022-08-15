@@ -1,5 +1,6 @@
 from .ffscore import experimental_reference
 from .ffscore import tolerance
+import numpy as np
 
 def force_field_score_scheme(prediction, ground_truth, tolerance):
     """Score static property of water using the score function
