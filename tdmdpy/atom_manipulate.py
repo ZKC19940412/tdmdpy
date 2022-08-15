@@ -34,7 +34,7 @@ def decompose_dump_xyz(dump_xyz_str, pos_xyz_str='pos.xyz',
     write(pos_xyz_str, pos_atom_objects)
     write(frc_xyz_str, frc_atom_objects)
     write(vel_xyz_str, vel_atom_objects)
-
+    write('ini.pdb', pos_atom_objects[0])
 
 def get_unique_atom_types(topology):
     """Obtain unique atom types from a reference topology.
