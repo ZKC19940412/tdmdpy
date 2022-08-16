@@ -1,25 +1,6 @@
 from .ffscore import experimental_reference，tolerance，units
 import numpy as np
 
-def force_field_score_scheme(prediction, ground_truth, tolerance):
-    """Score static property of water using the score function
-       from Carlos Vega et al.
-       DOI: 10.1039/c1cp22168j
-       input:
-       prediction: (float) predicted property from snap md
-       ground_truth: (float) experimental properties
-       tolerance: (float) tolerance factor in %
-       property_str: (str) name of predicted property
-       output:
-       final score: (int) final score of the property,
-    """
-    
-    base_score = np.round(10 - np.abs(100 * (
-            prediction - ground_truth) / (ground_truth * tolerance)))
-    final_score = np.max([base_score, 0])
-
-    return final_score
-
 def compute_normal_percent_error(reference_val, model_val):
     """Compute percent error based on scalar quantity
            input:
@@ -77,3 +58,60 @@ def interpolate_array(x, y, new_x_size):
 
     return new_x, new_y
              
+def force_field_score_scheme(prediction, ground_truth, tolerance):
+    """Score static property of water using the score function
+       from Carlos Vega et al.
+       DOI: 10.1039/c1cp22168j
+       input:
+       prediction: (float) predicted property from snap md
+       ground_truth: (float) experimental properties
+       tolerance: (float) tolerance factor in %
+       property_str: (str) name of predicted property
+       output:
+       final score: (int) final score of the property,
+    """
+    
+    base_score = np.round(10 - np.abs(100 * (
+            prediction - ground_truth) / (ground_truth * tolerance)))
+    final_score = np.max([base_score, 0])
+
+    return final_score
+
+def score_property(modelled_val, property_indices=0):
+    """Score static property of water using the score function
+           from Carlos Vega et al and percent error
+           DOI: 10.1039/c1cp22168j
+           input:
+           modelled_val: (float) predicted property from ML md
+           property_indices: (int) indices of the property
+    """
+    # Extract needed information
+    experimental_reference_val = list(experimental_reference.values())[property_indices]
+    ffscore_tolerance = list(tolerance.values())[property_indices]
+
+    # Compute ff score and percent error
+    ffscore = force_field_score_scheme(modelled_val, experimental_reference_val, ffscore_tolerance)
+    percent_error = mean_absolute_percentage_error([experimental_reference_val], [modelled_val]) * 100
+
+    # Write information into dictionary
+    summary_dictionary = {'Property': list(experimental_reference.keys())[property_indices],
+                          'Units': list(units.values())[property_indices],
+                          'FF Score Tolerance (%)': ffscore_tolerance,
+                          'FF Score ': ffscore,
+                          'Experimental reference': experimental_reference_val,
+                          'Modelled': modelled_val,
+                          'Percent error (%)': np.round(percent_error, 2)}
+
+    # Pretty print
+    n = 44
+    print(n * "=")
+    print(f"{'              Score Summary       ':{n}s}")
+    print(n * "=")
+    for i in range(2):
+        print(f"{'              %s       ':{n}s}" % (list(summary_dictionary.keys())[i] + " : " + list(
+            summary_dictionary.values())[i]))
+    for j in range(2, 7):
+        print(f"{'              %s       ':{n}s}" % (list(summary_dictionary.keys())[j] + " : " + str(list(
+            summary_dictionary.values())[j])))
+
+    print(n * "=")
