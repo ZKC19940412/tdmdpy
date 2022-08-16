@@ -1,16 +1,6 @@
 from .ffscore import experimental_reference，tolerance，units
 import numpy as np
-
-def compute_normal_percent_error(reference_val, model_val):
-    """Compute percent error based on scalar quantity
-           input:
-           reference_val: (float) reference value
-           model_val: (float) modelled value
-
-           output:
-           Percent error with respect to reference
-    """
-    return 100.0 * np.abs((model_val - reference_val) / reference)
+from sklearn.metrics import mean_absolute_percentage_error
 
 def compute_matching_score(reference_arr, modelled_arr):
     """Compute matching score between two arrays
@@ -26,18 +16,6 @@ def compute_matching_score(reference_arr, modelled_arr):
     mae = np.sum(absolute_difference / (np.sum(reference_arr) + np.sum(modelled_arr)))
     matching_score = (1 - mae) * 100
     return matching_score
-
-
-def compute_normal_percent_error(reference_val, model_val):
-    """Compute percent error based on scalar quantity
-           input:
-           reference_val: (float) reference value
-           model_val: (float) modelled value
-
-           output:
-           Percent error with respect to reference
-    """
-    return 100.0 * np.abs((model_val - reference_val) / reference_val)
 
 
 def interpolate_array(x, y, new_x_size):
