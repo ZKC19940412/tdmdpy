@@ -11,10 +11,9 @@ TDMDpy: A python package to calculate thermodynamic quantities from MD simulatio
 * Orthobaric densities
 * Radial distribution functinos
 * Self diffusion coefficients
-* [Scoring thermodynamic properties based on experimental references](https://pubs.rsc.org/en/content/articlelanding/2011/cp/c1cp22168j)
+* Enthalpy of vaporization
 
 ### Advanced Features
-* Enthalpy of vaporization
 * Perform molecular dynamic simulation with prefitted ML potentials using [ASE](https://wiki.fysik.dtu.dk/ase/tutorials/md/md.html)
 * Single-point energy and force predictions with ML potentials
 
