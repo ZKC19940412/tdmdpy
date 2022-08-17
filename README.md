@@ -8,7 +8,6 @@ TDMDpy
 TDMDpy: A python package to calculate thermodynamic quantities from MD simulations with ML potentials.
 
 ### Feautres
-* Isothermal compressibility
 * Orthobaric densities
 * Radial distribution functinos
 * Self diffusion coefficients
