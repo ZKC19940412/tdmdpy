@@ -5,13 +5,15 @@ TDMDpy
 [![codecov](https://codecov.io/gh/REPLACE_WITH_OWNER_ACCOUNT/TDMDpy/branch/master/graph/badge.svg)](https://codecov.io/gh/REPLACE_WITH_OWNER_ACCOUNT/TDMDpy/branch/master)
 
 
-TDMDpy: A python package to calculate thermodynamic quantities from MD simulations with ML potentials.
+TDMDpy: A python package to calculate thermodynamic quantities of water/ice systems from MD simulations.
 
 ### Feautres
 * Orthobaric densities
 * Radial distribution functinos
 * Self diffusion coefficients
 * Enthalpy of vaporization
+* Vibrational density of states
+* Surface tenstion
 
 ### Advanced Features
 * Perform molecular dynamic simulation with prefitted ML potentials using [ASE](https://wiki.fysik.dtu.dk/ase/tutorials/md/md.html)
