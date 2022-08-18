@@ -1,10 +1,21 @@
+from .atom_manipulate import get_unique_atom_types
 import numpy as np
 from scipy import signal
 import scipy.constants as spc
 
-def compute_all_vdos(trj, dt=1, Dt=2000.0, Dt_pad=2000.0):
-    """Computes VDOS separately for all atom types in a trajectory."""
 
+def compute_all_vdos(trj, dt=1, Dt=2000.0, Dt_pad=2000.0):
+    """Computes VDOS separately for all atom types in a trajectory.
+       input:
+       trj: (mdtraj object) A trajectory from MD simulation
+       dt: （float) Time step, in femto-seconds
+       Dt: (float) Total (double-sided) width of window, in femto-seconds
+       Dt_pad：(float):  Additional (double-sided) width of padding, in femto-seconds
+
+       output:
+       vdos_all: Vibrational density of state for all pairs
+
+    """
     top = trj.topology
 
     vdos_all = {}
@@ -13,11 +24,10 @@ def compute_all_vdos(trj, dt=1, Dt=2000.0, Dt_pad=2000.0):
     atom_types = get_unique_atom_types(top)
 
     for t1 in atom_types:
-
         # select indices of the atom type
         idx_t1 = top.select('name ' + t1)
 
-        # calculate velocity autocorrelation functions,
+        # calculate velocity auto-correlation functions,
         # averaged over atoms of this species
         cfs = get_acfs(trj.xyz.transpose(1, 0, 2)[idx_t1])
 
@@ -29,24 +39,24 @@ def compute_all_vdos(trj, dt=1, Dt=2000.0, Dt_pad=2000.0):
 
 
 def get_acfs(source):
-    """Calculate averaged autocorrelation function for a number of timeseries.
+    """Calculate averaged auto-correlation function for a number of time-series.
 
-    The `source` yields individual timeseries and each of those is a
-    timeseries of vector quantity. This means that if you
-    want only a single autocorrelation function, you need to wrap the input
-    array in something iterable, like a list.
+        The `source` yields individual time-series and each of those is a
+        time-series of vector quantity. This means that if you
+        want only a single auto-correlation function, you need to wrap the input
+        array in something iterable, like a list.
 
-    Arguments:
-        source: iterator over timeseries of dimension N by 3
+        input:
+        source: (ndarray) Iterator over time-series of dimension N by 3
 
-    Returns:
-        CFs, as many ACFs as timeseries yielded by `source`
+        output:
+        acf: (ndarray) As many ACFs as time-series yielded by `source`
     """
 
     acfs = []
     for data in source:
         N = len(data[:, 0])
-        norm = N - np.abs(np.arange(1-N, N), dtype=float)
+        norm = N - np.abs(np.arange(1 - N, N), dtype=float)
         cfs = [signal.correlate(data[:, d], data[:, d], mode='full', method='auto') / norm
                for d in range(3)]
         acfs.append(np.array(cfs).sum(axis=0))
@@ -56,22 +66,23 @@ def get_acfs(source):
 
 
 def get_spectra(acfs, dt, Dt, Dt_pad=0.0, f_w=np.hanning):
-    """Calculate spectra from autocorrelation functions using FFT.
+    """Calculate spectra from auto-correlation functions using FFT.
 
-    Processes multiple spectra at the same time, depending on the data in `acfs`.
+        Processes multiple spectra at the same time, depending on the data in `acfs`.
 
-    Arguments:
-        acfs: CFs numpy array
-        dt (float): time step, in femtoseconds
-        Dt (float): total (double-sided) width of window, in femtoseconds
-        Dt_pad (float): additional (double-sided) width of padding, in femtoseconds
-        f_w: function used to generate a (symmetric) window
+        input:
+        acfs: (ndarray) CFs numpy array
+        dt (float): Time step, in femto-seconds
+        Dt (float): Total (double-sided) width of window, in femto-seconds
+        Dt_pad (float): Additional (double-sided) width of padding, in femto-seconds
+        f_w: Function used to generate a (symmetric) window
 
-    Returns:
-        nu, intensity
+        output:
+        nu: (ndarray) x-axis for VDOS, in cm^-1
+        intensity: (ndarray) y-axis for VDOS, in a.u.
     """
 
-    c = spc.value('speed of light in vacuum')  #299792458.0   # m / s
+    c = spc.value('speed of light in vacuum')  # 299792458.0   # m / s
 
     # check the input
     if Dt <= 0.0:
@@ -80,12 +91,12 @@ def get_spectra(acfs, dt, Dt, Dt_pad=0.0, f_w=np.hanning):
         raise ValueError('`Dt_pad` must not be negative.')
     if dt * len(acfs) < Dt:
         msg = 'The window ({:.0f} fs) must be narrower than the data ({:.0f} fs). Alas, it is not.'
-        raise ValueError(msg.format(Dt, dt*len(acfs)))
+        raise ValueError(msg.format(Dt, dt * len(acfs)))
 
     nw = int(Dt / dt / 2.0)
     npad = int(Dt_pad / dt / 2.0)
 
-    frequency, intensity = _acfs_to_spectra(acfs, nw, npad=npad, d=spc.femto*dt, f_w=f_w)
+    frequency, intensity = _acfs_to_spectra(acfs, nw, npad=npad, d=spc.femto * dt, f_w=f_w)
 
     # convert frequency from Hz to cm^-1
     nu = frequency / (100.0 * c)
@@ -94,20 +105,21 @@ def get_spectra(acfs, dt, Dt, Dt_pad=0.0, f_w=np.hanning):
 
 
 def _acfs_to_spectra(acfs, nw, npad=0, d=1.0, f_w=np.hanning):
-    """Calculate spectra from autocorrelation functions using FFT.
+    """Calculate spectra from auto-correlation functions using FFT.
 
-    Optionally processes multiple spectra at the same time. In that case,
-    `acfs` is a 2D array of shape number of ACFs by length of ACFs. This is a
-    low-level function, use `get_spectra` for a more convenient interface.
+        Optionally processes multiple spectra at the same time. In that case,
+        `acfs` is a 2D array of shape number of ACFs by length of ACFs. This is a
+        low-level function, use `get_spectra` for a more convenient interface.
 
-    Arguments:
-        acfs: array, 1D or 2D, symmetric full ACFs
-        nw: *one-sided* number of points of ACF window
-        npad: *one-sided* number of additional padding zeros
-        f_w: function to evaluate the *double-sided* symmetric window
+        input:
+        acfs: (ndarray) Symmetric full ACFs
+        nw: *One-sided* number of points of ACF window
+        npad: *One-sided* number of additional padding zeros
+        f_w: Function to evaluate the *double-sided* symmetric window
 
-    Returns:
-        freq, intensity
+        output:
+        freq: (ndarray) x-axis for VDOS, in cm^-1
+        intensity: (ndarray) y-axis for VDOS, in a.u.
     """
 
     # Make sure we're processing a 2D array.
@@ -128,7 +140,7 @@ def _acfs_to_spectra(acfs, nw, npad=0, d=1.0, f_w=np.hanning):
     assert ww <= length, 'Window cannot be wider than data.'
 
     # slice ACF data
-    data = acfs[:, length//2-nw:length//2+nw+1].copy()
+    data = acfs[:, length // 2 - nw:length // 2 + nw + 1].copy()
     length_trim = data.shape[1]
 
     # multiply by the window
@@ -136,8 +148,8 @@ def _acfs_to_spectra(acfs, nw, npad=0, d=1.0, f_w=np.hanning):
 
     # pad with optional zeros along time axis
     # one extra zero for symmetry - keep the ACF an even function
-    data = np.pad(data, ((0, 0), (npad+1, npad)), 'constant', constant_values=0.0)
-    assert data.shape == (n, length_trim + 2*npad + 1)
+    data = np.pad(data, ((0, 0), (npad + 1, npad)), 'constant', constant_values=0.0)
+    assert data.shape == (n, length_trim + 2 * npad + 1)
 
     # window width including zero padding
     wwp = data.shape[1]
@@ -156,6 +168,6 @@ def _acfs_to_spectra(acfs, nw, npad=0, d=1.0, f_w=np.hanning):
         intensity = intensity[0, :]
 
     # Normalize intensities to 1:
-    intensity = intensity/intensity.sum()
+    intensity = intensity / intensity.sum()
 
     return frequency, intensity
