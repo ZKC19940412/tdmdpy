@@ -1,5 +1,5 @@
 nep3 2 H O 
-cutoff 8 6
+cutoff 8 6 328 152
 n_max 8 8
 basis_size 8 8
 l_max 4 2 1

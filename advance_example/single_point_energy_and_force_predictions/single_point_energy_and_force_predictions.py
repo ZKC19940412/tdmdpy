@@ -7,7 +7,7 @@ import sys
 if __name__ == "__main__":
 
     # Uptake user define data path
-    data_path = sys.argv[1]
+    data_path = './liquid_water_aimd_300K.xyz'
 
     # Derive number of configurations
     number_of_configurations = len(read(data_path, index = ':'))
