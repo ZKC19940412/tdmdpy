@@ -16,8 +16,9 @@ TDMDpy: A python package to calculate thermodynamic quantities of water/ice syst
 * Surface tenstion
 
 ### Advanced Features
-* Perform molecular dynamic simulation with prefitted ML potentials using [ASE](https://wiki.fysik.dtu.dk/ase/tutorials/md/md.html)
-* Single-point energy and force predictions with ML potentials
+* Perform molecular dynamic simulation with prefitted ML potentials, using [ASE](https://wiki.fysik.dtu.dk/ase/tutorials/md/md.html)
+* Single-point energy and force predictions with ML potentials, using [pyNEP](https://github.com/bigd4/PyNEP)
+* Normal mode analysis for single water molecule in gas-phase, using [kALDo](https://github.com/nanotheorygroup/kaldo)
 
 ### Copyright
 
