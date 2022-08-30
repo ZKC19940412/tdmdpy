@@ -12,7 +12,6 @@ import shutil
 if os.path.exists('fd'):
     shutil.rmtree('fd')
 
-# os.environ["CUDA_VISIBLE_DEVICES"]=""
 os.environ["CUDA_VISIBLE_DEVICES"]=""
 os.environ['TF_CPP_MIN_LOG_LEVEL'] = '3' 
 
