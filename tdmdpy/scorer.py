@@ -93,3 +93,4 @@ def score_property(modelled_val, property_indices=0):
             summary_dictionary.values())[j])))
 
     print(n * "=")
+    return summary_dictionary
