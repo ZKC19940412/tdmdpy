@@ -1,8 +1,4 @@
-from ase.calculators.tip4p import TIP4P
-from ase.md.velocitydistribution import MaxwellBoltzmannDistribution
-from ase.io.trajectory import Trajectory
 from ase.io import read
-from ase import units
 import numpy as np
 from sklearn.metrics import mean_squared_error
 
