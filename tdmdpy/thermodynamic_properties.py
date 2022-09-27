@@ -92,7 +92,7 @@ def get_quantity_averages(quantities, mode='diff', n_block_val=None):
         index = np.where(np.abs(
             rate_of_change_quantities) <= 0.01 * max_change)[0][0]
 
-    return np.mean(quantities[index:])
+    return np.mean(quantities[index:]), index
 
 
 def get_block_average_quantities(data_arr, n_block=10):
