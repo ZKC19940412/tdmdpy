@@ -174,12 +174,17 @@ def process_diffusion_coefficients(sdc_out_str, dimension_factor=3, is_verbose=T
     D_y = data[:, 5]
     D_z = data[:, 6]
 
+    # Get index of stable regions of the time auto correlation functions
+    _, index_Dx = get_quantity_averages(D_x)
+    _, index_Dy = get_quantity_averages(D_y)
+    _, index_Dz = get_quantity_averages(D_z)
+    
     # Obtain average along each direction
     # 10.0 makes it goes from A^2/ps to 10^-5 cm^2/s
-    D = 10.0 * (get_quantity_averages(D_x) + get_quantity_averages(D_y) + get_quantity_averages(D_z)) / dimension_factor
+    D = 10.0 * (get_block_averages(D_x[index_Dx:], n_block=5) + get_block_averages(D_y[index_Dy:], n_block=5) + get_block_averages(
+        D_z[index_Dz:], n_block=5)) / dimension_factor
 
     # Display results in original form:
-    # 10.0 makes it goes from A^2/ps to 10^-5 cm^2/s
     if is_verbose:
-        print('Diffusion coefficients in 10^-5 cm^2/s: %.1f' % D)
-    return D, D_x, D_y, D_z, correlation_time
+        print('Diffusion coefficients in 10^-5 cm^2/s: %.1f' % D.mean())
+    return D, D_x, D_y, D_z, correlation_time, D.std()
