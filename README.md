@@ -5,7 +5,7 @@ TDMDpy
 [![codecov](https://codecov.io/gh/REPLACE_WITH_OWNER_ACCOUNT/TDMDpy/branch/master/graph/badge.svg)](https://codecov.io/gh/REPLACE_WITH_OWNER_ACCOUNT/TDMDpy/branch/master)
 
 
-TDMDpy: A python package to calculate thermodynamic quantities for water/ice systems from MD simulations.
+TDMDpy: A python package to calculate thermodynamic quantities for water/ice systems from GPUMD/NEP simulations.
 
 ### Feautres
 * Orthobaric densities
