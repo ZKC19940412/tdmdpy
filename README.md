@@ -8,7 +8,7 @@ TDMDpy
 TDMDpy: A python package to calculate thermodynamic quantities for water/ice systems from GPUMD/NEP simulations.
 
 ### Feautres
-* Orthobaric densities
+* Isobaric densities
 * Radial distribution functinos
 * Self diffusion coefficients
 * Enthalpy of vaporization
