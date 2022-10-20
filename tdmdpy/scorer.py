@@ -53,7 +53,7 @@ def force_field_score_scheme(prediction, ground_truth, tolerance):
             prediction - ground_truth) / (ground_truth * tolerance)))
     final_score = np.max([base_score, 0])
 
-    return final_score
+    return int(final_score)
 
 def score_property(modelled_val, property_indices=0):
     """Score static property of water using the score function
