@@ -19,6 +19,7 @@ TDMDpy: A python package to calculate thermodynamic quantities for water/ice sys
 * Perform molecular dynamic simulation with prefitted ML potentials, using [ASE](https://wiki.fysik.dtu.dk/ase/tutorials/md/md.html)
 * Single-point energy and force predictions with ML potentials, using [pyNEP](https://github.com/bigd4/PyNEP)
 * Normal mode analysis for single water molecule in gas-phase, using [kALDo](https://github.com/nanotheorygroup/kaldo)
+* Create systems of hydrogen-disordered ice structures, using [genice2](https://github.com/vitroid/GenIce)
 
 ### Copyright
 
