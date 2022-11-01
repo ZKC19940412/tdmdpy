@@ -125,7 +125,8 @@ def generate_ice_structures(target_densities,
                                                 usecols=0, dtype=str)[:-4]
     configuration_coordinate = np.loadtxt('tmp.xyz',
                                           skiprows=4, usecols=(1, 2, 3))[:-4]
-
+    os.remove('tmp.xyz')
+    
     # Compute box length based on density and number of molecules
     number_of_molecules = len(configuration_coordinate)
     box_length = get_box_length(density=0.92,
