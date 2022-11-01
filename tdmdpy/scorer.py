@@ -75,10 +75,10 @@ def score_property(modelled_val, property_str):
     # Write information into dictionary
     summary_dictionary = {'Property': property_str,
                           'Units': unit_str,
-                          'FF Score Tolerance (%)': ffscore_tolerance,
-                          'FF Score ': ffscore,
+                          'FF score tolerance (%)': ffscore_tolerance,
+                          'FF score ': ffscore,
                           'Experimental reference': experimental_reference_val,
-                          'Modelled': modelled_val,
+                          'Modeled': modelled_val,
                           'Percent error (%)': np.round(percent_error, 2)}
 
     # Pretty print
