@@ -1,4 +1,4 @@
-"""A python package for postprocessing MD simulations from LAMMPS."""
+"""A python package to calculate thermodynamic properties from MD simulations."""
 
 # Add imports here
 from .atom_manipulate import *
