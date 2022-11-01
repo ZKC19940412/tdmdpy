@@ -55,7 +55,7 @@ def force_field_score_scheme(prediction, ground_truth, tolerance):
 
     return int(final_score)
 
-def score_property(modelled_val, property_indices=0):
+def score_property(modelled_val, property_str):
     """Score static property of water using the score function
            from Carlos Vega et al and percent error
            DOI: 10.1039/c1cp22168j
@@ -64,16 +64,17 @@ def score_property(modelled_val, property_indices=0):
            property_indices: (int) indices of the property
     """
     # Extract needed information
-    experimental_reference_val = list(experimental_reference.values())[property_indices]
-    ffscore_tolerance = list(tolerance.values())[property_indices]
+    experimental_reference_val = experimental_reference[property_str]
+    ffscore_tolerance = tolerance[property_str]
+    unit_str = units[property_str]
 
     # Compute ff score and percent error
     ffscore = force_field_score_scheme(modelled_val, experimental_reference_val, ffscore_tolerance)
     percent_error = mean_absolute_percentage_error([experimental_reference_val], [modelled_val]) * 100
 
     # Write information into dictionary
-    summary_dictionary = {'Property': list(experimental_reference.keys())[property_indices],
-                          'Units': list(units.values())[property_indices],
+    summary_dictionary = {'Property': property_str,
+                          'Units': unit_str,
                           'FF Score Tolerance (%)': ffscore_tolerance,
                           'FF Score ': ffscore,
                           'Experimental reference': experimental_reference_val,
