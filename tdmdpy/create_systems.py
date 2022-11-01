@@ -134,10 +134,10 @@ def generate_ice_structures(target_densities,
     cubic_box = np.array([box_length, box_length, box_length])
 
     # Make a configuration
-    system = make_atom_object(configuration_coordinate,
-                              configuration_chemical_symbols,
+    system = make_atom_object(configuration_chemical_symbols,
+                              configuration_coordinate,
                               cubic_box)
-    system.array['mass'] = system.get_masses()
+    system.arrays['mass'] = system.get_masses()
     if is_output_lmp:
         write('model.lmp', system)
     else:
