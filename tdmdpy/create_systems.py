@@ -94,7 +94,7 @@ def generate_water_box(target_density=0.994,
 
 def generate_ice_structures(target_densities,
                             type_str='ih',
-                            number_of_molecules=64,
+                            number_of_total_replica=27,
                             is_output_lmp=False):
     """Generate hydrogen disordered ice structure, powered by genice2
 
@@ -109,7 +109,7 @@ def generate_ice_structures(target_densities,
     """
 
     # Derive number of replica
-    number_of_replica = int(number_of_molecules ** (1 / 3.))
+    number_of_replica = int(number_of_total_replica ** (1 / 3.))
 
     # Construct genice command
     genice_command = 'genice2 --rep ' + str(number_of_replica) + ' ' + str(
@@ -125,19 +125,23 @@ def generate_ice_structures(target_densities,
                                                 usecols=0, dtype=str)[:-4]
     configuration_coordinate = np.loadtxt('tmp.xyz',
                                           skiprows=4, usecols=(1, 2, 3))[:-4]
-    os.remove('tmp.xyz')
     
-    # Compute box length based on density and number of molecules
-    number_of_molecules = len(configuration_coordinate)
-    box_length = get_box_length(density=0.92,
-                                number_of_molecules=number_of_molecules)
-
-    cubic_box = np.array([box_length, box_length, box_length])
+    # Compute box length based on density and number of atoms
+    number_of_atoms = len(configuration_coordinate)
+    
+    # Derive cell dimension
+    cell = np.zeros([3])
+    for i in range(3):
+        cell[i] = np.loadtxt('tmp.xyz', skiprows=number_of_atoms + 5 + i, 
+                                    usecols=i + 1)[0]
+    
+    # Get rid of tmp file
+    os.remove('tmp.xyz')
 
     # Make a configuration
     system = make_atom_object(configuration_chemical_symbols,
                               configuration_coordinate,
-                              cubic_box)
+                              cell)
     system.arrays['mass'] = system.get_masses()
     if is_output_lmp:
         write('model.lmp', system)
