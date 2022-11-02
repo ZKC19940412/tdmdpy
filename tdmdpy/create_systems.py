@@ -92,7 +92,7 @@ def generate_water_box(target_density=0.994,
     return systems
 
 
-def generate_ice_structures(target_densities,
+def generate_ice_structures(
                             type_str='ih',
                             number_of_total_replica=27,
                             is_output_lmp=False):
