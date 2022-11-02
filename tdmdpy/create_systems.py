@@ -12,25 +12,6 @@ import scipy.constants as spc
 import subprocess
 
 
-def get_box_length(density, number_of_molecules):
-    """Derive box length based on densities
-
-              input:
-              density: (float) target density of systems
-              number_of_molecules: (int) number of molecules
-
-              output:
-              box_length (float): length of cubic box
-    """
-    # Define constants and number of molecules
-    molar_mass_water = 18.01528
-    NA = spc.value('Avogadro constant')
-    unit_conversion_factor = (spc.centi / spc.angstrom) ** 3
-    box_length = ((molar_mass_water * number_of_molecules *
-                   unit_conversion_factor) / (NA * density)) ** (1 / 3)
-    return box_length
-
-
 def generate_water_box(target_density=0.994,
                        number_of_molecules=64,
                        is_equilibrate=True,
@@ -56,11 +37,13 @@ def generate_water_box(target_density=0.994,
                  [0, rOH * np.cos(x), -rOH * np.sin(x)]]
     atoms = Atoms('OH2', positions=positions)
 
-    box_length = get_box_length(target_density, number_of_molecules)
+    molar_mass_water = 18.01528
+    NA = spc.value('Avogadro constant')
+    box_length = ((molar_mass_water / NA) / (target_density / 1e24))**(1 / 3.)
     atoms.set_cell((box_length, box_length, box_length))
     atoms.center()
 
-    number_or_replica = int(number_of_molecules ** (1 / 3.))
+    number_or_replica = int(ceil(number_of_molecules ** (1 / 3.)))
     atoms = atoms.repeat(number_or_replica)
     atoms.set_pbc(True)
 
