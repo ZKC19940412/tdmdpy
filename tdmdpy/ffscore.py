@@ -1,8 +1,8 @@
 # Initalize a data dictionary for experimental reference, along with the force field scoring scheme proposed by Carlos Vega et al.
 # URL for the paper: 10.1039/c1cp22168j
 
-experimental_reference = {'delta_H_melt': 1.44,
-                          'delta_H_vapor': 10.52,
+experimental_reference = {'delta_H_melt': 62.44,
+                          'delta_H_vapor': 456.2,
                           'gamma_300K': 71.73,
                           'gamma_450K': 42.88,
                           'Tm': 273.15,
@@ -27,8 +27,8 @@ experimental_reference = {'delta_H_melt': 1.44,
                           'neta_373K_1bar': 0.284
                           }
 
-units = {'delta_H_melt': 'kcal/mol',
-         'delta_H_vapor': 'kcal/mol',
+units = {'delta_H_melt': 'meV/H2O',
+         'delta_H_vapor': 'meV/H2O',
          'gamma_300K': 'mN/m',
          'gamma_450K': 'mN/m',
          'Tm': 'K',
