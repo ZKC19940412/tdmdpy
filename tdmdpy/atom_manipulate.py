@@ -37,6 +37,7 @@ def decompose_dump_xyz(dump_xyz_str, pos_xyz_str='pos.xyz',
     write('ini_pos.pdb', pos_atom_objects[0])
     write('ini_vel.pdb', vel_atom_objects[0])
 
+
 def get_unique_atom_types(topology):
     """Obtain unique atom types from a reference topology.
 
@@ -84,31 +85,6 @@ def load_with_cell(filename, unitcell_length_matrix, unitcell_angle_matrix,
     return trj
 
 
-def make_atom_object(atomic_string, coordinate, cell):
-    """Create simple atom object based on chemical symbol and "position-like" vectors
-
-           input:
-           atomic_string: (nd str array) nd string array
-           coordinate: (nd float array) "position-like" vector
-
-           output:
-           atoms (ASE Atoms object): atom object
-
-    """
-    # Build ase atom object from starch
-    tmp_str = 'H' * len(atomic_string)
-
-    # Ghost molecule!
-    atoms = Atoms(tmp_str)
-
-    # Inheritance properties from input
-    atoms.set_chemical_symbols(atomic_string)
-    atoms.set_positions(coordinate)
-    atoms.set_pbc([True, True, True])
-    atoms.cell = cell
-    return atoms
-
-
 def load_nth_frames(total_xyz_name, reference_chemical_symbols,
                     frame_index=-1, frame_output_format='pdb'):
     """Load nth frame from the xyz output dumped from lammps simulation
@@ -141,3 +117,74 @@ def load_nth_frames(total_xyz_name, reference_chemical_symbols,
         write('extracted_frames' + frame_output_format, selected_frames, format='lammps-data')
     else:
         write('extracted_frames' + frame_output_format, selected_frames)
+
+
+def make_atom_object(atomic_string, coordinate, cell):
+    """Create simple atom object based on chemical symbol and "position-like" vectors
+
+           input:
+           atomic_string: (nd str array) nd string array
+           coordinate: (nd float array) "position-like" vector
+
+           output:
+           atoms (ASE Atoms object): atom object
+
+    """
+    # Build ase atom object from starch
+    tmp_str = 'H' * len(atomic_string)
+
+    # Ghost molecule!
+    atoms = Atoms(tmp_str)
+
+    # Inheritance properties from input
+    atoms.set_chemical_symbols(atomic_string)
+    atoms.set_positions(coordinate)
+    atoms.set_pbc([True, True, True])
+    atoms.cell = cell
+    return atoms
+
+
+def wrap_coordinates(pos_xyz_str='pos.xyz'):
+    """Wrap coordinates back to periodic box
+
+               input:
+               pos_xyz_str (str): name of the pos.xyz file
+
+               output:
+               single_atom_object (ASE Atoms object): atom object with wrapped coordinate
+
+        """
+
+    # Read in pos.xyz
+    single_atom_object = read(pos_xyz_str)
+
+    # Derive cell from atom object and along each direction
+    cell = single_atom_object.cell
+    cell_x = cell[0][0]
+    cell_y = cell[1][1]
+    cell_z = cell[2][2]
+
+    # Obtain a copy of positions
+    positions = single_atom_object.positions.copy()
+
+    # Process positions based on wrapping rule
+    for i in range(positions.shape[0]):
+        while positions[i, 0] < 0:
+            positions[i, 0] += cell_x
+        while positions[i, 0] >= cell_x:
+            positions[i, 0] -= cell_x
+
+        while positions[i, 1] < 0:
+            positions[i, 1] += cell_y
+        while positions[i, 1] >= cell_y:
+            positions[i, 1] -= cell_y
+
+        while positions[i, 2] < 0:
+            positions[i, 2] += cell_z
+        while positions[i, 2] >= cell_z:
+            positions[i, 2] -= cell_z
+
+    # Set wrapped positions back to the object
+    single_atom_object.positions = positions
+
+    return single_atom_object
