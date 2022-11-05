@@ -14,7 +14,7 @@ import subprocess
 
 def generate_water_box(target_density=0.994,
                        number_of_molecules=64,
-                       is_equilibrate=True,
+                       is_pre_equilibrate=True,
                        equilibrate_temperature=300,
                        equilibrate_time_in_fs=4000):
     """Generate water box
