@@ -181,7 +181,7 @@ def process_diffusion_coefficients(sdc_out_str, dimension_factor=3, is_verbose=T
     
     # Obtain average along each direction
     # 10.0 makes it goes from A^2/ps to 10^-5 cm^2/s
-    D = 10.0 * (get_block_averages(D_x[index_Dx:], n_block=5) + get_block_averages(D_y[index_Dy:], n_block=5) + get_block_averages(
+    D = 10.0 * (get_block_average_quantities(D_x[index_Dx:], n_block=5) + get_block_average_quantities(D_y[index_Dy:], n_block=5) + get_block_average_quantities(
         D_z[index_Dz:], n_block=5)) / dimension_factor
 
     # Display results in original form:
