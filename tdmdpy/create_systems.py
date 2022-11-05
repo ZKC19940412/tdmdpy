@@ -43,7 +43,7 @@ def generate_water_box(target_density=0.994,
     atoms.set_cell((box_length, box_length, box_length))
     atoms.center()
 
-    number_or_replica = int(ceil(number_of_molecules ** (1 / 3.)))
+    number_or_replica = int(np.ceil(number_of_molecules ** (1 / 3.)))
     atoms = atoms.repeat(number_or_replica)
     atoms.set_pbc(True)
 
@@ -55,7 +55,7 @@ def generate_water_box(target_density=0.994,
     systems = atoms
     if is_equilibrate:
         tag = 'tip4p_equil'
-        atoms.calc = TIP4P(rc=4.5)
+        atoms.calc = TIP4P(rc=10.0)
         md = Langevin(atoms, 1 * units.fs,
                       temperature=equilibrate_temperature * units.kB,
                       friction=0.01, logfile=tag + '.log')
