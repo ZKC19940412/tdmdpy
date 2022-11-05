@@ -22,7 +22,7 @@ def generate_water_box(target_density=0.994,
                  input:
                  target_density: (float) target density of systems
                  number_of_molecules: (int) number of molecules
-                 is_equilibrate: (boolean) whether to equilibrate system
+                 is_pre_equilibrate: (boolean) whether to pre-equilibrate system
                  equilibrate_temperature: (float) temperature for equilibrate
                  equilibrate_time_in_fs: (float) total time for equilibrate
 
