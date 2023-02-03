@@ -1,6 +1,18 @@
 import fileinput
 import sys
 
+def add_line(file_name, line_num, text):
+    """Add specific content in one text file based on line number
+       input:
+       file_name: (str) name of the file
+       line_num: (int) line number
+       text: (str) content to replace
+    """
+    lines = open(file_name, 'r').readlines()
+    lines[line_num] = text + '\n'
+    out = open(file_name, 'w')
+    out.writelines(lines)
+    out.close()
 
 def delete_specific_line(file_name, key_words):
     """delete specific line from one text file
