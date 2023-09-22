@@ -53,7 +53,7 @@ def generate_water_box(target_density=0.994,
                                         for j in [0, 1, 2]])
     atoms.arrays['mass'] = atoms.get_masses()
     systems = atoms
-    if is_equilibrate:
+    if is_pre_equilibrate:
         tag = 'tip4p_equil'
         atoms.calc = TIP4P(rc=10.0)
         md = Langevin(atoms, 1 * units.fs,
