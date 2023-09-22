@@ -6,4 +6,4 @@ pynvml
 genice2 
 genice2-svg 
 genice2-cage
-genice2-twist
+#genice2-twist
