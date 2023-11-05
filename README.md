@@ -20,7 +20,7 @@ TDMDpy: A python package to calculate thermodynamic quantities for water/ice sys
 * Create systems of hydrogen-disordered ice structures, using [genice2](https://github.com/vitroid/GenIce)
 
 ### Disclaimers
-* Examples highlighting usage of TDMDpy will be acessible in a spearate [repo](https://github.com/ZKC19940412/water_ice_nep) as relevant publication is avialable. 
+* Examples highlighting usage of TDMDpy will be acessible in a spearate [repo](https://github.com/nanotheorygroup/) as relevant publication is avialable. 
 * TDMDpy is currently developed for linux machine only, and might be made to compatiable with Windows later. 
 
 ### Copyright
