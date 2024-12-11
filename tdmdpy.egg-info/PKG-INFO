@@ -1,3 +1,21 @@
+Metadata-Version: 2.1
+Name: tdmdpy
+Version: 0+untagged.180.g124d899.dirty
+Summary: A python package to postprocess MD simulations from LAMMPS.
+Author: Zekun Chen
+Author-email: zkuchen@ucdavis.edu
+License: Not Open Source
+Description-Content-Type: text/markdown
+License-File: LICENSE
+Requires-Dist: ase>=3.22.1
+Requires-Dist: mdtraj
+Requires-Dist: numpy>=1.16
+Requires-Dist: py3Dmol
+Requires-Dist: pynvml
+Requires-Dist: genice2
+Requires-Dist: genice2-svg
+Requires-Dist: genice2-cage
+
 TDMDpy
 ==============================
 [//]: # (Badges)
@@ -22,12 +40,6 @@ TDMDpy: A python package to calculate thermodynamic quantities from MD simulatio
 ### Disclaimers
 * Examples highlighting usage of TDMDpy will be acessible in a spearate [repo](https://github.com/nanotheorygroup/water_ice_nep) as relevant publication is avialable. 
 * TDMDpy is currently developed for linux machine only, and might be made to compatiable with Windows later. 
-
-### Installation
-
-```bash
-pip install git+https://github.com/ZKC19940412/tdmdpy
-```
 
 ### Copyright
 
