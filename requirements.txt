@@ -1,4 +1,6 @@
 ase>=3.22.1
+calorine
+kaldo
 mdtraj
 numpy>=1.16
 py3Dmol
@@ -6,4 +8,4 @@ pynvml
 genice2 
 genice2-svg 
 genice2-cage
-#genice2-twist
+
