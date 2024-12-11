@@ -31,7 +31,7 @@ pip install git+https://github.com/ZKC19940412/tdmdpy
 
 ### Copyright
 
-Copyright (c) 2021, Zekun Chen
+Copyright (c) 2024, Zekun Chen, Bohan Li
 
 
 #### Acknowledgements
