@@ -15,7 +15,7 @@ TDMDpy: A python package to calculate thermodynamic quantities from MD simulatio
 * Vibrational density of states
 
 ### Advanced Features
-* Single-point energy and force predictions with ML potentials, using [pyNEP](https://github.com/bigd4/PyNEP)
+* Single-point energy and force predictions with ML potentials
 * Normal mode analysis for single water molecule in gas-phase, using [kALDo](https://github.com/nanotheorygroup/kaldo)
 * Create systems of hydrogen-disordered ice structures, using [genice2](https://github.com/vitroid/GenIce)
 
@@ -25,7 +25,7 @@ TDMDpy: A python package to calculate thermodynamic quantities from MD simulatio
 
 ### Installation
 
-```bash
+```console
 pip install git+https://github.com/ZKC19940412/tdmdpy
 ```
 
